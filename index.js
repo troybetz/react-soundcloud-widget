@@ -6,6 +6,7 @@
 
 var React = require('react');
 var SCUtil = require('./util/SCUtil');
+var Display = require('./lib/Display');
 var sc;
 
 function noop() {}
@@ -91,7 +92,7 @@ var SoundCloud = React.createClass({
   },
 
   render: function() {
-    return <div></div>
+    return <Display track={this.state.track} />
   }
 });
 
