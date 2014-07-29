@@ -98,7 +98,7 @@ var SoundCloud = React.createClass({
   
   _togglePlayback: function() {
     this.state.stream.togglePause();
-    
+    this.forceUpdate();
   },
 
   /**
