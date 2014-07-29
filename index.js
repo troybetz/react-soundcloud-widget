@@ -91,8 +91,28 @@ var SoundCloud = React.createClass({
     return currentUrl !== newUrl;
   },
 
+  /**
+   * Toggle pause/play on current stream
+   * Must force an update, isPlaying is only calculated on render.
+   */
+  
+  _togglePlayback: function() {
+    this.state.stream.togglePause();
+    
+  },
+
+  /**
+   * Determine if current stream is playing
+   */
+  
+  _isPlaying: function() {
+    return this.state.stream && this.state.stream.paused !== undefined && !this.state.stream.paused;
+  },
+
   render: function() {
-    return <Display track={this.state.track} />
+    return <Display track={this.state.track}
+                    togglePlayback={this._togglePlayback}
+                    isPlaying={this._isPlaying()} />
   }
 });
 
