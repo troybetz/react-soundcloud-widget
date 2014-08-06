@@ -5,11 +5,19 @@
  */
 
 var React = require('react');
+var noop = require('react/lib/emptyFunction');
 var SCUtil = require('./util/SCUtil');
 var Display = require('./lib/Display');
 var sc;
 
-function noop() {}
+/**
+ * Placeholder stream
+ */
+
+var dummyStream = {
+  durationEstimate: 0,
+  position: 0
+};
 
 /**
  * SoundCloud component
@@ -19,7 +27,7 @@ var SoundCloud = React.createClass({
   getInitialState: function() {
     return {
       track: undefined,
-      stream: undefined
+      stream: dummyStream
     };
   },
 
@@ -55,9 +63,9 @@ var SoundCloud = React.createClass({
    */
 
   _prepareForNewTrack: function() {
-    if (this.state.stream) {
+    if (this.state.stream.destruct) {
       this.state.stream.destruct();
-      this.setState({stream: undefined});
+      this.setState({stream: dummyStream});
     }
   },
 
@@ -73,7 +81,8 @@ var SoundCloud = React.createClass({
     stream.play({
       onplay: this.props.onPlay || noop,
       onpause: this.props.onPause || noop,
-      onfinish: this.props.onEnd || noop
+      onfinish: this.props.onEnd || noop,
+      whileplaying: this._updateProgress
     });
     stream.pause();
   },
@@ -92,6 +101,14 @@ var SoundCloud = React.createClass({
   },
 
   /**
+   * Determine if current stream is playing
+   */
+  
+  _isPlaying: function() {
+    return this.state.stream && this.state.stream.paused !== undefined && !this.state.stream.paused;
+  },
+
+  /**
    * Toggle pause/play on current stream
    * Must force an update, isPlaying is only calculated on render.
    */
@@ -102,17 +119,30 @@ var SoundCloud = React.createClass({
   },
 
   /**
-   * Determine if current stream is playing
+   * Force duration & position props passed to display to update.
    */
   
-  _isPlaying: function() {
-    return this.state.stream && this.state.stream.paused !== undefined && !this.state.stream.paused;
+  _updateProgress: function() {
+    this.forceUpdate();
+  },
+
+  /**
+   * Skip to a certain part of the track
+   *
+   * @param {number} newPosition
+   */
+
+  _setPosition: function(newPosition) {
+    this.state.stream.setPosition(newPosition);
   },
 
   render: function() {
     return <Display track={this.state.track}
+                    duration={this.state.stream.durationEstimate}
+                    position={this.state.stream.position}
                     togglePlayback={this._togglePlayback}
-                    isPlaying={this._isPlaying()} />
+                    isPlaying={this._isPlaying()}
+                    setPosition={this._setPosition}/>
   }
 });
 
