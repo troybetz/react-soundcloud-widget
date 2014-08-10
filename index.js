@@ -18,7 +18,8 @@ var SoundCloud = React.createClass({
   getInitialState: function() {
     return {
       track: undefined,
-      stream: undefined
+      stream: undefined,
+      eventsBound: false
     };
   },
 
@@ -47,7 +48,7 @@ var SoundCloud = React.createClass({
     sc.stream(url).then(function(response) {
       _this.setState({track: response.track});
       response.stream.then(function(stream) {
-        _this._loadNewStream(stream);
+        _this.setState({stream: stream});
       });
     }).catch(function(e) { console.log(e); });
   },
@@ -57,32 +58,21 @@ var SoundCloud = React.createClass({
    */
 
   _prepareForNewTrack: function() {
-    if (this.state.stream) {
-      this.state.stream.destruct();
-      this.setState({stream: undefined, track: undefined});
+    var stream = this.state.stream;
+    if (stream) {
+      stream.destruct();
+      this.setState({stream: undefined, track: undefined, eventsBound: false});
     }
-  },
-
-  /**
-   * Load a new stream
-   *
-   * @param {object} stream
-   */
-
-  _loadNewStream: function(stream) {
-    this._bindEvents(stream);
-    this.setState({stream: stream});
   },
 
   /**
    * Bind events to new stream. Has to be done
    * through the play method, as SoundManager doesn't
    * stream bindings outside of certain contexts.
-   *
-   * @param {object} newStream
    */
   
-  _bindEvents: function(stream) {
+  _bindEvents: function() {
+    var stream = this.state.stream;
     stream.play({
       onplay: this.props.onPlay || noop,
       onpause: this.props.onPause || noop,
@@ -90,6 +80,7 @@ var SoundCloud = React.createClass({
       whileplaying: this._updateProgress
     });
     stream.pause();
+    this.setState({eventsBound: true});
   },
 
   /**
@@ -111,6 +102,7 @@ var SoundCloud = React.createClass({
    */
   
   _togglePlayback: function() {
+    if (!this.state.eventsBound) this._bindEvents();
     this.state.stream.togglePause();
     this.forceUpdate();
   },
@@ -134,12 +126,25 @@ var SoundCloud = React.createClass({
   },
 
   render: function() {
-    var isPlaying = this.state.stream && this.state.stream.paused !== undefined && !this.state.stream.paused;
-    var streamLoaded = this.state.stream !== undefined;
+    var stream = this.state.stream;
+    var streamLoaded = stream !== undefined;
+    var isPlaying;
+    var duration;
+    var position;
+
+    if (streamLoaded) {
+      duration = stream.durationEstimate ? stream.durationEstimate : 100;
+      position = stream.position ? stream.position : 0;
+      isPlaying = position && !stream.paused;
+    } else {
+      isPlaying = false;
+      duration = 100;
+      position = 0;
+    }
 
     return <Display track={this.state.track}
-                    duration={this.state.stream.durationEstimate}
-                    position={this.state.stream.position}
+                    duration={duration}
+                    position={position}
                     togglePlayback={this._togglePlayback}
                     isPlaying={isPlaying}
                     streamLoaded={streamLoaded}
