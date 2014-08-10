@@ -6,18 +6,9 @@
 
 var React = require('react');
 var noop = require('react/lib/emptyFunction');
-var SCUtil = require('./util/SCUtil');
+var SCStream = require('../sc-stream');
 var Display = require('./lib/Display');
 var sc;
-
-/**
- * Placeholder stream
- */
-
-var dummyStream = {
-  durationEstimate: 0,
-  position: 0
-};
 
 /**
  * SoundCloud component
@@ -27,12 +18,12 @@ var SoundCloud = React.createClass({
   getInitialState: function() {
     return {
       track: undefined,
-      stream: dummyStream
+      stream: undefined
     };
   },
 
   componentDidMount: function() {
-    sc = new SCUtil(this.props.clientId);
+    sc = new SCStream(this.props.clientId);
     this._loadTrack(this.props.url);
   },
 
@@ -50,12 +41,15 @@ var SoundCloud = React.createClass({
    */
 
   _loadTrack: function(url) {
-    this._prepareForNewTrack();
     var _this = this;
-    sc.load(url, function(track, stream) {
-      _this._bindEvents(stream);
-      _this.setState({track: track, stream: stream});
-    });
+    this._prepareForNewTrack();
+
+    sc.stream(url).then(function(response) {
+      _this.setState({track: response.track});
+      response.stream.then(function(stream) {
+        _this._loadNewStream(stream);
+      });
+    }).catch(function(e) { console.log(e); });
   },
 
   /**
@@ -63,10 +57,21 @@ var SoundCloud = React.createClass({
    */
 
   _prepareForNewTrack: function() {
-    if (this.state.stream.destruct) {
+    if (this.state.stream) {
       this.state.stream.destruct();
-      this.setState({stream: dummyStream});
+      this.setState({stream: undefined, track: undefined});
     }
+  },
+
+  /**
+   * Load a new stream
+   *
+   * @param {object} stream
+   */
+
+  _loadNewStream: function(stream) {
+    this._bindEvents(stream);
+    this.setState({stream: stream});
   },
 
   /**
@@ -101,14 +106,6 @@ var SoundCloud = React.createClass({
   },
 
   /**
-   * Determine if current stream is playing
-   */
-  
-  _isPlaying: function() {
-    return this.state.stream && this.state.stream.paused !== undefined && !this.state.stream.paused;
-  },
-
-  /**
    * Toggle pause/play on current stream
    * Must force an update, isPlaying is only calculated on render.
    */
@@ -137,11 +134,15 @@ var SoundCloud = React.createClass({
   },
 
   render: function() {
+    var isPlaying = this.state.stream && this.state.stream.paused !== undefined && !this.state.stream.paused;
+    var streamLoaded = this.state.stream !== undefined;
+
     return <Display track={this.state.track}
                     duration={this.state.stream.durationEstimate}
                     position={this.state.stream.position}
                     togglePlayback={this._togglePlayback}
-                    isPlaying={this._isPlaying()}
+                    isPlaying={isPlaying}
+                    streamLoaded={streamLoaded}
                     setPosition={this._setPosition}/>
   }
 });
