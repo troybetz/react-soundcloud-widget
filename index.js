@@ -76,11 +76,29 @@ var SoundCloud = React.createClass({
     stream.play({
       onplay: this.props.onPlay || noop,
       onpause: this.props.onPause || noop,
-      onfinish: this.props.onEnd || noop,
+      onfinish: this._handleEnd,
       whileplaying: this._updateProgress
     });
-    stream.pause();
     this.setState({eventsBound: true});
+  },
+
+  /**
+   * Make sure stream and bindings are reset
+   */
+
+  _handleEnd: function() {
+    if (this.props.onEnd) this.props.onEnd();
+    this._reset();
+  },
+
+  /**
+   * SoundManager 2 object unbind all events after end of tracks,
+   * so we need to make sure _bindEvents() is called the next time
+   * _togglePlayback() is called.
+   */
+
+  _reset: function() {
+    this.setState({eventsBound: false});
   },
 
   /**
@@ -102,7 +120,7 @@ var SoundCloud = React.createClass({
    */
   
   _togglePlayback: function() {
-    if (!this.state.eventsBound) this._bindEvents();
+    if (!this.state.eventsBound) return this._bindEvents();
     this.state.stream.togglePause();
     this.forceUpdate();
   },
@@ -127,27 +145,30 @@ var SoundCloud = React.createClass({
 
   render: function() {
     var stream = this.state.stream;
-    var streamLoaded = stream !== undefined;
-    var isPlaying;
+    var streamInfo = {};
     var duration;
     var position;
+    var isPlaying;
 
-    if (streamLoaded) {
+    if (stream) {
       duration = stream.durationEstimate ? stream.durationEstimate : 100;
       position = stream.position ? stream.position : 0;
-      isPlaying = position && !stream.paused;
+      isPlaying = !stream.paused && stream.playState;
     } else {
-      isPlaying = false;
       duration = 100;
-      position = 0;
+      position = 0
+      isPlaying = false;
     }
 
+    streamInfo = {
+      duration: duration, 
+      position: position, 
+      isPlaying: isPlaying
+    };
+
     return <Display track={this.state.track}
-                    duration={duration}
-                    position={position}
+                    streamInfo={streamInfo}
                     togglePlayback={this._togglePlayback}
-                    isPlaying={isPlaying}
-                    streamLoaded={streamLoaded}
                     setPosition={this._setPosition}/>
   }
 });
