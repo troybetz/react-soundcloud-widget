@@ -120,6 +120,7 @@ var SoundCloud = React.createClass({
    */
   
   _togglePlayback: function() {
+    if (!this.state.stream) return;
     if (!this.state.eventsBound) return this._bindEvents();
     this.state.stream.togglePause();
     this.forceUpdate();
