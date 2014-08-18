@@ -23,6 +23,17 @@ function load(streamInfo) {
   _stream = streamInfo;
 }
 
+/**
+ * Reset everything back to defaults.
+ */
+
+function reset() {
+  if (_stream.destruct) {
+    _stream.destruct();
+    _stream = {};
+  }
+}
+
 function togglePause() {
   if (_stream.togglePause) {
     _stream.togglePause();
@@ -74,6 +85,11 @@ StreamStore.dispatchToken = SCAppDispatcher.register(function(payload) {
   var action = payload.action;
 
   switch(action.type) {
+
+    case ActionTypes.RECEIVE_TRACK_INFO:
+      reset();
+      StreamStore.emitChange();
+      break;
 
     case ActionTypes.RECEIVE_STREAM_INFO:
       load(action.streamInfo);
