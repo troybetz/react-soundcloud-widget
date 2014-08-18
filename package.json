@@ -2,7 +2,7 @@
   "name": "react-soundcloud",
   "version": "0.0.1",
   "description": "minimal soundcloud player",
-  "main": "index.js"
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/compedit/react-soundcloud.git"
@@ -27,11 +27,14 @@
   },
   "devDependencies": {
     "browserify": "^5.9.1",
+    "http-server": "^0.6.1",
     "reactify": "^0.14.0",
     "watchify": "^1.0.1"
   },
   "scripts": {
-    "start": "./node_modules/.bin/watchify ./example/app.js -o ./example/bundle.js"
+    "start": "npm run serve & npm run watch-js",
+    "serve": "./node_modules/.bin/http-server ./example -s",
+    "watch-js": "./node_modules/.bin/watchify ./example/app.js -o ./example/bundle.js"
   },
   "browserify": {
     "transform": [
