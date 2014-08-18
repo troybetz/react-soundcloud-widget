@@ -53,6 +53,10 @@ var TrackStore = merge(EventEmitter.prototype, {
   
   emitChange: function() {
     this.emit(CHANGE_EVENT);
+  },
+
+  get: function() {
+    return _track;
   }
 });
 
