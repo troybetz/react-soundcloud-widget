@@ -33,6 +33,9 @@ module.exports = {
   load: function(track) {
     sc.stream(track).then(function(response) {
       SCExternalActionCreators.receiveTrackInfo(response.track);
+      response.stream.then(function(stream) {
+        SCExternalActionCreators.receiveStreamInfo(stream);
+      });
     });
   }
 };

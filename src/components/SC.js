@@ -6,12 +6,14 @@
 
 var React = require('react');
 var TrackStore = require('../stores/TrackStore');
+var StreamStore = require('../stores/StreamStore');
 var SCClientActionCreators = require('../actions/SCClientActionCreators');
 var SCTrackActionCreators = require('../actions/SCTrackActionCreators');
 
 function getStateFromStores() {
   return {
-    track: TrackStore.get()
+    track: TrackStore.get(),
+    stream: StreamStore.get()
   };
 }
 
@@ -26,13 +28,16 @@ module.exports = React.createClass({
   },
   
   componentDidMount: function() {
+    TrackStore.addChangeListener(this._onChange);
+    StreamStore.addChangeListener(this._onChange);
+    
     SCClientActionCreators.register(this.props.clientId);
     SCTrackActionCreators.load(this.props.track);
-    TrackStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
     TrackStore.removeChangeListener(this._onChange);
+    StreamStore.removeChangeListener(this._onChange);
   },
 
   _onChange: function() {
@@ -40,6 +45,11 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    return <h1>{this.state.track.title}</h1>
+    return (
+      <div>
+        <h1>{this.state.track.title}</h1>
+        <h3>{this.state.stream.url}</h3>
+      </div>
+    );
   }
 });
