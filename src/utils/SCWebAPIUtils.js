@@ -3,6 +3,7 @@
  */
 
 var SCStream = require('sc-stream');
+var SCExternalActionCreators = require('../actions/SCExternalActionCreators');
 var sc;
 
 /**
@@ -21,5 +22,17 @@ module.exports = {
   
   register: function(clientId) {
     sc = new SCStream(clientId);
+  },
+
+  /**
+   * Load track & stream info into the player
+   *
+   * @param {Object} track
+   */
+
+  load: function(track) {
+    sc.stream(track).then(function(response) {
+      SCExternalActionCreators.receiveTrackInfo(response.track);
+    });
   }
 };
