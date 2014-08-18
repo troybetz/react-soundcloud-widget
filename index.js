@@ -1,1 +1,1 @@
-module.exports = require('./src/components/ReactSC');
+module.exports = require('./src/components/SC');
