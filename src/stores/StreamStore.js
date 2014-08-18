@@ -23,6 +23,12 @@ function load(streamInfo) {
   _stream = streamInfo;
 }
 
+function togglePause() {
+  if (_stream.togglePause) {
+    _stream.togglePause();
+  }
+}
+
 /**
  * Stream Store
  *
@@ -74,6 +80,11 @@ StreamStore.dispatchToken = SCAppDispatcher.register(function(payload) {
       StreamStore.emitChange();
       break;
 
+    case ActionTypes.TOGGLE_PAUSE:
+      togglePause();
+      StreamStore.emitChange();
+      break;
+    
     default:
       // nada.
   }

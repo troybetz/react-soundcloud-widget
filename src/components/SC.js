@@ -9,6 +9,7 @@ var TrackStore = require('../stores/TrackStore');
 var StreamStore = require('../stores/StreamStore');
 var SCClientActionCreators = require('../actions/SCClientActionCreators');
 var SCTrackActionCreators = require('../actions/SCTrackActionCreators');
+var PlayButton = require('./PlayButton');
 
 function getStateFromStores() {
   return {
@@ -60,6 +61,7 @@ module.exports = React.createClass({
 
     return (
       <div style={styles}>
+        <PlayButton />
         <h1>{this.state.track.title}</h1>
         <h3>{this.state.stream.url}</h3>
       </div>
