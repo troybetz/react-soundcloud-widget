@@ -40,6 +40,10 @@ module.exports = React.createClass({
     StreamStore.removeChangeListener(this._onChange);
   },
 
+  componentWillReceiveProps: function(newProps) {
+    SCTrackActionCreators.checkTrack(newProps.track);
+  },  
+
   _onChange: function() {
     this.setState(getStateFromStores());
   },

@@ -22,5 +22,18 @@ module.exports = {
 
   load: function(track) {
     SCWebAPIUtils.load(track);
+  },
+
+  /**
+   * Check if passed in track is different from current one.
+   *
+   * @param {Object} track
+   */
+
+  checkTrack: function(track) {
+    SCAppDispatcher.handleViewAction({
+      type: ActionTypes.CHECK_TRACK,
+      track: track
+    });
   }
 };

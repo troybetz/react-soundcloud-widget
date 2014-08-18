@@ -26,6 +26,18 @@ function load(trackInfo) {
 }
 
 /**
+ * Check if current track needs to be switched out
+ *
+ * @param {Object} track
+ */
+
+function checkTrack(track) {
+  if (track !== _track || track !== _track.permalink_url) {
+    SCWebAPIUtils.load(track);
+  }
+}
+
+/**
  * Track Store
  *
  * Holds current track information
@@ -74,6 +86,10 @@ TrackStore.dispatchToken = SCAppDispatcher.register(function(payload) {
     case ActionTypes.RECEIVE_TRACK_INFO:
       load(action.trackInfo);
       TrackStore.emitChange();
+      break;
+
+    case ActionTypes.CHECK_TRACK:
+      checkTrack(action.track);
       break;
 
     default:
