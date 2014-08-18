@@ -5,6 +5,7 @@
 var SCAppDispatcher = require('../dispatcher/SCAppDispatcher');
 var SCConstants = require('../constants/SCConstants');
 var SCWebAPIUtils = require('../utils/SCWebAPIUtils');
+var SCTrackUtils = require('../utils/SCTrackUtils');
 var EventEmitter = require('events').EventEmitter;
 var merge = require('react/lib/merge');
 
@@ -20,6 +21,7 @@ var _track = {};
  */
 
 function load(trackInfo) {
+  SCTrackUtils.format(trackInfo);
   _track = trackInfo;
 }
 
