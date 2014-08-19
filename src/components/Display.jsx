@@ -4,6 +4,7 @@
 
 var React = require('react');
 var PlayButton = require('./PlayButton.jsx');
+var ProgressBar = require('./ProgressBar.jsx');
 
 /**
  * Display component
@@ -22,9 +23,8 @@ module.exports = React.createClass({
 
     return (
       <div style={styles}>
-        <PlayButton />
-        <h1>{this.props.track.title}</h1>
-        <h3>{this.props.stream.url}</h3>
+        <PlayButton stream={this.props.stream}/>
+        <ProgressBar track={this.props.track} stream={this.props.stream}/>
       </div>
     );
   }
