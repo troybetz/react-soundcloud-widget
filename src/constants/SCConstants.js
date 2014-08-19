@@ -10,6 +10,7 @@ var keyMirror = require('react/lib/keyMirror');
 
 module.exports = {
   ActionTypes: keyMirror({
+    UPDATE_TRACK: null,
     RECEIVE_TRACK_INFO: null,
     RECEIVE_STREAM_INFO: null,
     TOGGLE_PAUSE: null

@@ -14,26 +14,11 @@ var ActionTypes = SCConstants.ActionTypes;
 
 module.exports = {
 
-  /**
-   * Force new track information to be loaded.
-   *
-   * @param {String|Object} track
-   */
-
-  load: function(track) {
-    SCWebAPIUtils.load(track);
-  },
-
-  /**
-   * Check if passed in track is different from current one.
-   *
-   * @param {Object} track
-   */
-
-  checkTrack: function(track) {
+  loadTrack: function(track) {
     SCAppDispatcher.handleViewAction({
-      type: ActionTypes.CHECK_TRACK,
+      type: ActionTypes.UPDATE_TRACK,
       track: track
     });
+    SCWebAPIUtils.load(track);
   }
 };

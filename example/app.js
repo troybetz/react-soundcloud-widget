@@ -7,7 +7,7 @@
 var React = require('react');
 var SoundCloud = require('../');
 
-var url = 'https://soundcloud.com/hucci/wings';
+var url = 'https://soundcloud.com/hucci/hitta';
 var url2 = 'https://soundcloud.com/robswire/knife-party-boss-mode-teaser';
 var url3 = {
   "kind": "track",

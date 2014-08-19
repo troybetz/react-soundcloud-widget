@@ -31,7 +31,7 @@ module.exports = React.createClass({
     StreamStore.addChangeListener(this._onChange);
     
     SCClientActionCreators.register(this.props.clientId);
-    SCTrackActionCreators.load(this.props.track);
+    SCTrackActionCreators.loadTrack(this.props.track);
   },
 
   componentWillUnmount: function() {
@@ -40,7 +40,9 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(newProps) {
-    SCTrackActionCreators.checkTrack(newProps.track);
+    if (newProps.track !== this.props.track) {
+      SCTrackActionCreators.loadTrack(newProps.track);
+    }
   },  
 
   _onChange: function() {
