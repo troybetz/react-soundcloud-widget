@@ -1,1 +1,1 @@
-module.exports = require('./src/components/SC');
+module.exports = require('./src/components/SC.jsx');

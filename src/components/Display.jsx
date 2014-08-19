@@ -1,11 +1,9 @@
-/** @jsx React.DOM */
-
 /**
  * Module dependencies
  */
 
 var React = require('react');
-var PlayButton = require('./PlayButton');
+var PlayButton = require('./PlayButton.jsx');
 
 /**
  * Display component

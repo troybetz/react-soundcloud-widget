@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /**
  * Module dependencies
  */
@@ -9,7 +7,7 @@ var TrackStore = require('../stores/TrackStore');
 var StreamStore = require('../stores/StreamStore');
 var SCClientActionCreators = require('../actions/SCClientActionCreators');
 var SCTrackActionCreators = require('../actions/SCTrackActionCreators');
-var Display = require('./Display');
+var Display = require('./Display.jsx');
 
 function getStateFromStores() {
   return {

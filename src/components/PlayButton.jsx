@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /**
  * Module dependencies
  */
@@ -17,6 +15,6 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    return <button onClick={this._handleClick}>Play</button>
+    return <button onClick={this._handleClick}>Play</button>;
   }
 });
