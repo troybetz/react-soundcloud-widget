@@ -13,7 +13,8 @@ module.exports = {
     UPDATE_TRACK: null,
     RECEIVE_TRACK_INFO: null,
     RECEIVE_STREAM_INFO: null,
-    TOGGLE_PAUSE: null
+    TOGGLE_PAUSE: null,
+    SKIP_TO: null
   }),
 
   PayloadSources: keyMirror({

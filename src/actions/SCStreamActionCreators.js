@@ -18,5 +18,12 @@ module.exports = {
     SCAppDispatcher.handleViewAction({
       type: ActionTypes.TOGGLE_PAUSE
     });
+  },
+
+  skipTo: function(newPosition) {
+    SCAppDispatcher.handleViewAction({
+      type: ActionTypes.SKIP_TO,
+      position: newPosition
+    });
   }
 };

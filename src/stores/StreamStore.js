@@ -12,6 +12,7 @@ var ActionTypes = SCConstants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
 var _stream = {};
+var _eventsBound = false;
 
 /**
  * Load new stream into store
@@ -31,12 +32,34 @@ function reset() {
   if (_stream.destruct) {
     _stream.destruct();
     _stream = {};
+    _eventsBound = false;
   }
 }
 
+/**
+ * Called on very first play of each track.
+ */
+
+function bindAndPlay() {
+  _stream.play({
+    whileplaying: updateProgress
+  });
+  _eventsBound = true;
+}
+
+function updateProgress() {
+  StreamStore.emitChange();
+}
+
 function togglePause() {
-  if (_stream.togglePause) {
-    _stream.togglePause();
+  if (!_stream.togglePause) return;
+  if (!_eventsBound) return bindAndPlay();
+  _stream.togglePause();
+}
+
+function setPosition(position) {
+  if (_stream.setPosition) {
+    _stream.setPosition(position);
   }
 }
 
@@ -73,7 +96,11 @@ var StreamStore = merge(EventEmitter.prototype, {
   },
 
   get: function() {
-    return _stream;
+    return {
+      isPlaying: !_stream.paused && !!_stream.playState,
+      duration: _stream.durationEstimate ? _stream.durationEstimate : 1,
+      position: _stream.position ? _stream.position : 0
+    };
   }
 });
 
@@ -100,6 +127,11 @@ StreamStore.dispatchToken = SCAppDispatcher.register(function(payload) {
       StreamStore.emitChange();
       break;
     
+    case ActionTypes.SKIP_TO:
+      setPosition(action.position);
+      StreamStore.emitChange();
+      break;
+
     default:
       // nada.
   }
