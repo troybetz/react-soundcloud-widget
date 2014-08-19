@@ -85,8 +85,7 @@ StreamStore.dispatchToken = SCAppDispatcher.register(function(payload) {
   var action = payload.action;
 
   switch(action.type) {
-
-    case ActionTypes.RECEIVE_TRACK_INFO:
+    case ActionTypes.UPDATE_TRACK:
       reset();
       StreamStore.emitChange();
       break;
