@@ -15,6 +15,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    return <button onClick={this._handleClick}>Play</button>;
+    var msg = this.props.stream.isPlaying ? 'stop' : 'play';
+    return <button onClick={this._handleClick}>{msg}</button>;
   }
 });
