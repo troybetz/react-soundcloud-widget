@@ -1,11 +1,11 @@
 {
-  "name": "react-soundcloud",
+  "name": "react-soundcloud-widget",
   "version": "0.0.1",
-  "description": "minimal soundcloud player",
+  "description": "react.js powered SoundCloud player component",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/compedit/react-soundcloud.git"
+    "url": "https://github.com/compedit/react-soundcloud-widget.git"
   },
   "keywords": [
     "soundcloud",
@@ -16,9 +16,9 @@
   "author": "troy betz",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/compedit/react-soundcloud/issues"
+    "url": "https://github.com/compedit/react-soundcloud-widget/issues"
   },
-  "homepage": "https://github.com/compedit/react-soundcloud",
+  "homepage": "https://github.com/compedit/react-soundcloud-widget",
   "dependencies": {
     "react": "^0.11.1"
   },

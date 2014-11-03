@@ -24,7 +24,7 @@ var SoundCloud = React.createClass({
 
   getDefaultProps: function() {
     return {
-      id: 'react-sc-player',
+      id: 'react-sc-widget',
       opts: DEFAULT_OPTIONS,
       onPlay: noop,
       onPause: noop,
