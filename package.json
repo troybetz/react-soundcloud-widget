@@ -21,9 +21,7 @@
   "homepage": "https://github.com/compedit/react-soundcloud",
   "dependencies": {
     "react": "^0.11.1",
-    "react-dispatcher": "^0.2.0",
     "require-sdk": "0.0.2",
-    "sc-stream": "0.0.3"
   },
   "devDependencies": {
     "browserify": "^5.9.1",
