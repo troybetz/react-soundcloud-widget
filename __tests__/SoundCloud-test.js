@@ -3,11 +3,13 @@
 jest.dontMock('../');
 
 describe('SoundCloud Component', function() {
+  var React = require('react/addons');
+  var SoundCloud = require('../');
+  var DEFAULT_OPTIONS = require('../lib/default-options');
+  var TestUtils = React.addons.TestUtils;
+  var widgetMock;
+
   beforeEach(function() {
-    React = require('react/addons');
-    SoundCloud = require('../');
-    DEFAULT_OPTIONS = require('../lib/default-options');
-    TestUtils = React.addons.TestUtils;
 
     /**
      * Mock out SoundCloud widget API
@@ -28,110 +30,138 @@ describe('SoundCloud Component', function() {
       PAUSE: 'pause',
       FINISH: 'finish'
     };
+  });
 
-    /**
-     * Use a container to avoid manipulating props directly 
-     * on the rendered soundcloud component.
-     */
-    
-    Container = React.createClass({
-      getInitialState: function() {
-        return {
-          url: 'https://soundcloud.com/hucci/hitta'
-        };
-      },
+  describe('instantiation', function() {
+    it('should render a SoundCloud API ready iframe', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud />);
+      var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
 
-      _changeUrl: function() {
-        this.setState({url: 'https://soundcloud.com/hudsonmohawke/chimes'});
-      },
-
-      render: function() {
-        return (
-          <div>
-            <button onClick={this._changeUrl}>change</button>
-            <SoundCloud url={this.state.url} />
-          </div>
-        );
-      }
+      expect(iframe.getAttribute('id')).toBe('react-sc-player');
+      expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=');
     });
 
-    container = TestUtils.renderIntoDocument(<Container />);
-    soundcloud = TestUtils.findRenderedComponentWithType(container, SoundCloud);
+    it('should create a new SoundCloud widget', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud />);
+      expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-player');
+    });
   });
 
-  it('should render a SoundCloud API ready iframe', function() {
-    var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+  describe('appearance', function() {
+    it('should pass a set of `opts` into the widget', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud />);
+      expect(widgetMock.load.mock.calls[0][1]).toEqual(DEFAULT_OPTIONS);
+    });
 
-    expect(iframe.getAttribute('id')).toBe('react-sc-player');
-    expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=' );
+    it('should accept custom `opts`', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud opts={{buying: false}}/>);
+      var options = DEFAULT_OPTIONS;
+      options.buying = false;
+
+      expect(widgetMock.load.mock.calls[0][1]).toEqual(options);
+    });
+
+    it('should accept a custom iframe id', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud id='custom-id'/>);
+      var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+
+      expect(iframe.getAttribute('id')).toBe('custom-id');
+    });
+
+    it('should readjust height if visual mode is enabled', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud opts={{visual: true}}/>);
+      var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+
+      expect(iframe.getAttribute('height')).toBe('450');
+    });
   });
 
-  it('can accept a custom iframe id', function() {
-    soundcloud.props.id = 'soundcloud';
-    soundcloud.forceUpdate();
+  describe('functionality', function() {
+    var Container;
+    var container;
 
-    var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
-    expect(iframe.getAttribute('id')).toBe('soundcloud');
+    beforeEach(function() {
+
+      /**
+       * Using `forceUpdate` doesn't work with `componentWillUpdate` when
+       * changing `props.url`. This is a hack to get around that.
+       */
+      
+      Container = React.createClass({
+        getInitialState: function() {
+          return {
+            url: 'https://soundcloud.com/hucci/hitta'
+          };
+        },
+
+        _setUrl1: function() {
+          this.setState({url: 'https://soundcloud.com/hucci/hitta'})
+        },
+
+        _setUrl2: function() {
+          this.setState({url: 'https://soundcloud.com/hudsonmohawke/chimes'});
+        },
+
+        render: function() {
+          return (
+            <div>
+              <button className='set-url-1' onClick={this._setUrl1}>URL 1</button>
+              <button className='set-url-2' onClick={this._setUrl2}>URL 1</button>
+              <SoundCloud url={this.state.url} />
+            </div>
+          );
+        }
+      });
+
+      container = TestUtils.renderIntoDocument(<Container />);
+    });
+
+    it('should load a `url`', function() {
+      var soundcloud = TestUtils.findRenderedComponentWithType(container, SoundCloud);
+      
+      expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/hucci/hitta')
+    });
+
+    it('should load new `url`s', function() {
+      var toggleButton = TestUtils.findRenderedDOMComponentWithClass(container, 'set-url-2');
+
+      TestUtils.Simulate.click(toggleButton);
+
+      expect(widgetMock.load.mock.calls.length).toBe(2);
+      expect(widgetMock.load.mock.calls[1][0]).toBe('https://soundcloud.com/hudsonmohawke/chimes');
+    });
+
+    it('should not load the same `url` twice', function() {
+      var toggleButton = TestUtils.findRenderedDOMComponentWithClass(container, 'set-url-1');
+
+      TestUtils.Simulate.click(toggleButton);
+
+      expect(widgetMock.load.mock.calls.length).toBe(1);
+    });
   });
 
-  it('should create a new SoundCloud widget', function() {
-    expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-player');
-  });
+  describe('events', function() {
+    it('should bind event handler props to playback events', function() {
+      var playFn = function() {};
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud onPlay={playFn}/>);
+      
+      expect(widgetMock.bind.mock.calls.length).toBe(3);
+      expect(widgetMock.bind.mock.calls[0]).toContain(playFn);
+    });
 
-  it('passes along a set of `opts` into the widget', function() {
-    expect(widgetMock.load.mock.calls[0][1]).toEqual(DEFAULT_OPTIONS);
-  });
+    it('should remove event bindings when unmounted', function() {
 
-  it('should load a `url` into the widget when created', function() {
-    expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/hucci/hitta')
-  });
+      /**
+       * `TestUtils.renderIntoDocument` renders the component into
+       * a detached DOM node, which makes it difficult to unmount.
+       *
+       * Instead, we'll just render it the old fashioned way.
+       */
+      
+      React.renderComponent(<SoundCloud />, document.body);
+      React.unmountComponentAtNode(document.body);
 
-  it('should be able to load new `url`s', function() {
-    var changeUrl = TestUtils.findRenderedDOMComponentWithTag(container, 'button');
-
-    TestUtils.Simulate.click(changeUrl);
-
-    expect(widgetMock.load.mock.calls.length).toBe(2);
-    expect(widgetMock.load.mock.calls[1][0]).toBe('https://soundcloud.com/hudsonmohawke/chimes');
-  });
-
-  it('wont load a `url` if its already loaded', function() {
-    // force the same url to be passed to soundcloud
-    container.forceUpdate();
-
-    // should not have been loaded again.
-    expect(widgetMock.load.mock.calls.length).toBe(1);
-  });
-
-  it('binds event handler props to Widget events', function() {
-    expect(widgetMock.bind.mock.calls.length).toBe(3);
-  });
-
-  it('removes event bindings when unmounted', function() {
-
-    /**
-     * `TestUtils.renderIntoDocument` renders the component into
-     * a detached DOM node, which makes it difficult to unmount.
-     *
-     * Instead, we'll just render it the old fashioned way.
-     */
-    
-    React.renderComponent(<Container />, document.body);
-    React.unmountComponentAtNode(document.body);
-
-    expect(widgetMock.unbind.mock.calls.length).toBe(3);
-  });
-
-  it('readjusts height depending on whether visual mode is enabled', function() {
-    var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
-    expect(iframe.getAttribute('height')).toBe('166');
-
-    soundcloud.props.opts = {
-      visual: true
-    };
-
-    soundcloud.forceUpdate();
-
-    expect(iframe.getAttribute('height')).toBe('450');
+      expect(widgetMock.unbind.mock.calls.length).toBe(3);
+    });
   });
 });
