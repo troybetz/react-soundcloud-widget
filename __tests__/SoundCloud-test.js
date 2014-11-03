@@ -13,11 +13,19 @@ describe('SoundCloud Component', function() {
      */
 
     widgetMock = {
-      load: jest.genMockFunction()
+      load: jest.genMockFunction(),
+      bind: jest.genMockFunction(),
+      unbind: jest.genMockFunction()
     }; 
 
     window.SC = {
       Widget: jest.genMockFunction().mockReturnValue(widgetMock)
+    };
+
+    window.SC.Widget.Events = {
+      PLAY: 'play',
+      PAUSE: 'pause',
+      FINISH: 'finish'
     };
 
     /**
@@ -40,7 +48,7 @@ describe('SoundCloud Component', function() {
         return (
           <div>
             <button onClick={this._changeUrl}>change</button>
-            <SoundCloud url={this.state.url}/>
+            <SoundCloud url={this.state.url} />
           </div>
         );
       }
@@ -80,5 +88,24 @@ describe('SoundCloud Component', function() {
 
     // should not have been loaded again.
     expect(widgetMock.load.mock.calls.length).toBe(1);
+  });
+
+  it('binds event handler props to Widget events', function() {
+    expect(widgetMock.bind.mock.calls.length).toBe(3);
+  });
+
+  it('removes event bindings when unmounted', function() {
+
+    /**
+     * `TestUtils.renderIntoDocument` renders the component into
+     * a detached DOM node, which makes it difficult to unmount.
+     *
+     * Instead, we'll just render it the old fashioned way.
+     */
+    
+    React.renderComponent(<Container />, document.body);
+    React.unmountComponentAtNode(document.body);
+
+    expect(widgetMock.unbind.mock.calls.length).toBe(3);
   });
 });
