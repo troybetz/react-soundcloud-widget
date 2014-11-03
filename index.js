@@ -17,6 +17,7 @@ function noop() {};
 var SoundCloud = React.createClass({
   propTypes: {
     url: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string,
     onPlay: React.PropTypes.func,
     onPause: React.PropTypes.func,
     onEnd: React.PropTypes.func,
@@ -25,6 +26,7 @@ var SoundCloud = React.createClass({
 
   getDefaultProps: function() {
     return {
+      id: 'react-sc-player',
       onPlay: noop,
       onPause: noop,
       onEnd: noop,
@@ -39,7 +41,7 @@ var SoundCloud = React.createClass({
   },
 
   componentDidMount: function() {
-    var widget = SC.Widget('react-sc-player');
+    var widget = SC.Widget(this.props.id);
     var embedOpts = merge(DEFAULT_OPTIONS, this.props.opts);
     widget.load(this.props.url, embedOpts);
 
@@ -60,7 +62,7 @@ var SoundCloud = React.createClass({
 
   render: function() {
     return (
-      <iframe id='react-sc-player'
+      <iframe id={this.props.id}
               width='100%' 
               height='450' 
               scrolling='no' 

@@ -66,6 +66,14 @@ describe('SoundCloud Component', function() {
     expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=' );
   });
 
+  it('can accept a custom iframe id', function() {
+    soundcloud.props.id = 'soundcloud';
+    soundcloud.forceUpdate();
+
+    var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+    expect(iframe.getAttribute('id')).toBe('soundcloud');
+  });
+
   it('should create a new SoundCloud widget', function() {
     expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-player');
   });
