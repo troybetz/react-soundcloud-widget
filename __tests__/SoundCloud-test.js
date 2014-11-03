@@ -6,6 +6,7 @@ describe('SoundCloud Component', function() {
   beforeEach(function() {
     React = require('react/addons');
     SoundCloud = require('../');
+    DEFAULT_OPTIONS = require('../lib/default-options');
     TestUtils = React.addons.TestUtils;
 
     /**
@@ -67,6 +68,10 @@ describe('SoundCloud Component', function() {
 
   it('should create a new SoundCloud widget', function() {
     expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-player');
+  });
+
+  it('passes along a set of `opts` into the widget', function() {
+    expect(widgetMock.load.mock.calls[0][1]).toEqual(DEFAULT_OPTIONS);
   });
 
   it('should load a `url` into the widget when created', function() {

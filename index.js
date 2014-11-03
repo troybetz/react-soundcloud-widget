@@ -5,6 +5,8 @@
  */
 
 var React = require('react');
+var merge = require('react/lib/merge');
+var DEFAULT_OPTIONS = require('./lib/default-options');
 
 function noop() {};
 
@@ -17,14 +19,16 @@ var SoundCloud = React.createClass({
     url: React.PropTypes.string.isRequired,
     onPlay: React.PropTypes.func,
     onPause: React.PropTypes.func,
-    onEnd: React.PropTypes.func
+    onEnd: React.PropTypes.func,
+    opts: React.PropTypes.objectOf(React.PropTypes.bool)
   },
 
   getDefaultProps: function() {
     return {
       onPlay: noop,
       onPause: noop,
-      onEnd: noop
+      onEnd: noop,
+      opts: DEFAULT_OPTIONS
     };
   },
 
@@ -36,7 +40,8 @@ var SoundCloud = React.createClass({
 
   componentDidMount: function() {
     var widget = SC.Widget('react-sc-player');
-    widget.load(this.props.url);
+    var embedOpts = merge(DEFAULT_OPTIONS, this.props.opts);
+    widget.load(this.props.url, embedOpts);
 
     this.setState({widget: widget});
     this._bindEvents();
@@ -44,7 +49,8 @@ var SoundCloud = React.createClass({
 
   componentWillUpdate: function(nextProps) {
     if (nextProps.url !== this.props.url) {
-      this.state.widget.load(nextProps.url);
+      var embedOpts = merge(DEFAULT_OPTIONS, this.props.opts);
+      this.state.widget.load(nextProps.url, embedOpts);
     }
   },
 
