@@ -43,6 +43,7 @@ var SoundCloud = React.createClass({
   componentDidMount: function() {
     var widget = SC.Widget(this.props.id);
     var embedOpts = merge(DEFAULT_OPTIONS, this.props.opts);
+
     widget.load(this.props.url, embedOpts);
 
     this.setState({widget: widget});
@@ -51,7 +52,7 @@ var SoundCloud = React.createClass({
 
   componentWillUpdate: function(nextProps) {
     if (nextProps.url !== this.props.url) {
-      var embedOpts = merge(DEFAULT_OPTIONS, this.props.opts);
+      var embedOpts = merge(DEFAULT_OPTIONS, nextProps.opts);
       this.state.widget.load(nextProps.url, embedOpts);
     }
   },
@@ -61,10 +62,11 @@ var SoundCloud = React.createClass({
   },
 
   render: function() {
+    var isVisualPlayer = this.props.opts.visual;
     return (
       <iframe id={this.props.id}
               width='100%' 
-              height='450' 
+              height={isVisualPlayer ? '450' : '166'} 
               scrolling='no' 
               frameBorder='no' 
               src='https://w.soundcloud.com/player/?url='

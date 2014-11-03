@@ -121,4 +121,17 @@ describe('SoundCloud Component', function() {
 
     expect(widgetMock.unbind.mock.calls.length).toBe(3);
   });
+
+  it('readjusts height depending on whether visual mode is enabled', function() {
+    var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+    expect(iframe.getAttribute('height')).toBe('166');
+
+    soundcloud.props.opts = {
+      visual: true
+    };
+
+    soundcloud.forceUpdate();
+
+    expect(iframe.getAttribute('height')).toBe('450');
+  });
 });
