@@ -32,7 +32,7 @@ $ npm install react-soundcloud-widget
 Boolean toggles passed via `props.opts`
 
 | Parameter | Purpose | Default|
-| --------|-------------|
+| --------|-------------|------|
 | `auto_play` | Start playing the widget after it’s loaded | `true` |
 | `visual` | Display widget in [visual mode](https://soundcheck.soundcloud.com/music/our-new-visual-player/). | `false` |
 | `buying` | Show/hide buy buttons | `true` |
@@ -45,6 +45,7 @@ Boolean toggles passed via `props.opts`
 | `show_user` | Show/hide the uploader name | `true` |
 | `show_reposts` | Show/hide reposts | `false` |
 | `hide_related` | Show/hide related tracks | `false` |
+
 
 
 ## Caveat
