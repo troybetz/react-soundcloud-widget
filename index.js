@@ -5,18 +5,31 @@
  */
 
 var React = require('react');
+var load = require('load-script');
 var merge = require('react/lib/merge');
 var DEFAULT_OPTIONS = require('./lib/default-options');
 
 /**
- * Create new `SoundCloud` component
+ * Create a new `SoundCloud` component.
+ *
+ * This is essentially a glorified wrapper over the existing
+ * HTML5 widget from SoundCloud. Programmatic control not included.
  */
 
 var SoundCloud = React.createClass({
   propTypes: {
+
+    // url to play. It's kept in sync, changing it will
+    // cause the widget to refresh and play the new url.
     url: React.PropTypes.string.isRequired,
+
+    // custom ID for widget iframe element
     id: React.PropTypes.string,
+
+    // widget parameters for appearance and auto play.
     opts: React.PropTypes.objectOf(React.PropTypes.bool),
+
+    // event subscriptions
     onPlay: React.PropTypes.func,
     onPause: React.PropTypes.func,
     onEnd: React.PropTypes.func
@@ -39,17 +52,23 @@ var SoundCloud = React.createClass({
   },
 
   componentDidMount: function() {
-    var widget = SC.Widget(this.props.id);
-    
-    widget.load(this.props.url, genEmbedOpts(this.props.opts));
+    var _this = this;
 
-    this.setState({widget: widget});
-    this._bindEvents();
+    createWidget(this.props.id, function(widget) {
+      _this._setupWidget(widget);
+      _this._loadUrl(_this.props.url, _this.props.opts);
+    });
   },
 
+  /**
+   * If the `url` has changed, load it.
+   *
+   * @param {Object} nextProps
+   */
+  
   componentWillUpdate: function(nextProps) {
     if (nextProps.url !== this.props.url) {
-      this.state.widget.load(nextProps.url, genEmbedOpts(nextProps.opts));
+      this._loadUrl(nextProps.url, nextProps.opts);
     }
   },
 
@@ -70,14 +89,38 @@ var SoundCloud = React.createClass({
   },
 
   /**
+   * Integrate a newly created `widget` with the rest of the component.
+   *
+   * @param {Object} Widget
+   */
+
+  _setupWidget: function(widget) {
+    this.setState({widget: widget});
+    this._bindEvents();
+  },
+
+  /**
+   * Load a `url` into the widget. This also causes the widget to refresh,
+   * making it the only chance to change its appearance via `opts`.
+   *
+   * @param {String} url
+   * @param {Object} opts
+   */
+
+  _loadUrl: function(url, opts) {
+    opts = merge(DEFAULT_OPTIONS, opts);
+    this.state.widget.load(url, opts);
+  },
+
+  /**
    * Listen for events coming from `widget`, and pass them up the
    * chain to the parent component if needed.
    */
 
   _bindEvents: function() {
-    this.state.widget.bind(SC.Widget.Events.PLAY, this.props.onPlay);
-    this.state.widget.bind(SC.Widget.Events.PAUSE, this.props.onPause);
-    this.state.widget.bind(SC.Widget.Events.FINISH, this.props.onEnd);
+    this.state.widget.bind(window.SC.Widget.Events.PLAY, this.props.onPlay);
+    this.state.widget.bind(window.SC.Widget.Events.PAUSE, this.props.onPause);
+    this.state.widget.bind(window.SC.Widget.Events.FINISH, this.props.onEnd);
   },
 
   /**
@@ -85,28 +128,32 @@ var SoundCloud = React.createClass({
    */
 
   _unbindEvents: function() {
-    this.state.widget.unbind(SC.Widget.Events.PLAY);
-    this.state.widget.unbind(SC.Widget.Events.PAUSE);
-    this.state.widget.unbind(SC.Widget.Events.FINISH);
+    this.state.widget.unbind(window.SC.Widget.Events.PLAY);
+    this.state.widget.unbind(window.SC.Widget.Events.PAUSE);
+    this.state.widget.unbind(window.SC.Widget.Events.FINISH);
   }
 });
 
 /**
- * Combine `opts` with SoundCloud`s default widget options
+ * Create a new `widget` by requesting and using the SoundCloud Widget API.
  *
- * @param {Object} opts
- * @returns {Object}
+ * @param {String} id - reference to iframe element for widget
+ * @param {Function} cb
  */
 
-function genEmbedOpts(opts) {
-  return merge(DEFAULT_OPTIONS, opts);
+function createWidget(id, cb) {
+    // load the API, it's namespaced as `window.SC`
+  return load('https://w.soundcloud.com/player/api.js', function(err) {
+    var widget = window.SC.Widget(id);
+    return cb(widget);
+  });
 }
 
 /**
  * Do nothing
  */
 
-function noop() {};
+function noop() {}
 
 /**
  * Expose `SoundCloud` component

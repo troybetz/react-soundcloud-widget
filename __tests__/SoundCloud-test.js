@@ -4,12 +4,21 @@ jest.dontMock('../');
 
 describe('SoundCloud Component', function() {
   var React = require('react/addons');
+  var load = require('load-script');
   var SoundCloud = require('../');
   var DEFAULT_OPTIONS = require('../lib/default-options');
   var TestUtils = React.addons.TestUtils;
   var widgetMock;
 
   beforeEach(function() {
+
+    /**
+     * Mock out API loading util
+     */
+    
+    load.mockImplementation(function(url, cb) {
+      return cb();
+    });
 
     /**
      * Mock out SoundCloud widget API
@@ -33,17 +42,22 @@ describe('SoundCloud Component', function() {
   });
 
   describe('instantiation', function() {
+    it('loads the SoundCloud Widget API', function() {
+      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud />);
+      expect(load.mock.calls[0][0]).toBe('https://w.soundcloud.com/player/api.js');
+    });
+
     it('should render a SoundCloud API ready iframe', function() {
       var soundcloud = TestUtils.renderIntoDocument(<SoundCloud />);
       var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
 
-      expect(iframe.getAttribute('id')).toBe('react-sc-player');
+      expect(iframe.getAttribute('id')).toBe('react-sc-widget');
       expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=');
     });
 
     it('should create a new SoundCloud widget', function() {
       var soundcloud = TestUtils.renderIntoDocument(<SoundCloud />);
-      expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-player');
+      expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-widget');
     });
   });
 
@@ -95,7 +109,7 @@ describe('SoundCloud Component', function() {
         },
 
         _setUrl1: function() {
-          this.setState({url: 'https://soundcloud.com/hucci/hitta'})
+          this.setState({url: 'https://soundcloud.com/hucci/hitta'});
         },
 
         _setUrl2: function() {
@@ -119,7 +133,7 @@ describe('SoundCloud Component', function() {
     it('should load a `url`', function() {
       var soundcloud = TestUtils.findRenderedComponentWithType(container, SoundCloud);
       
-      expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/hucci/hitta')
+      expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/hucci/hitta');
     });
 
     it('should load new `url`s', function() {
