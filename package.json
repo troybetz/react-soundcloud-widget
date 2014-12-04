@@ -2,7 +2,7 @@
   "name": "react-soundcloud-widget",
   "version": "1.0.1",
   "description": "react.js powered SoundCloud player component",
-  "main": "index.js",
+  "main": "index.jsx",
   "repository": {
     "type": "git",
     "url": "https://github.com/compedit/react-soundcloud-widget.git"
