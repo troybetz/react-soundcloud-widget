@@ -1,12 +1,10 @@
-/** @jsx React.DOM */
-
 /**
  * Module dependencies
  */
 
 var React = require('react');
 var load = require('load-script');
-var merge = require('react/lib/merge');
+var assign = require('object-assign');
 var DEFAULT_OPTIONS = require('./lib/default-options');
 
 /**
@@ -108,7 +106,7 @@ var SoundCloud = React.createClass({
    */
 
   _loadUrl: function(url, opts) {
-    opts = merge(DEFAULT_OPTIONS, opts);
+    opts = assign(DEFAULT_OPTIONS, opts);
     this.state.widget.load(url, opts);
   },
 
