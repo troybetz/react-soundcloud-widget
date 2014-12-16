@@ -76,13 +76,14 @@ var SoundCloud = React.createClass({
 
   render: function() {
     return (
-      <iframe id={this.props.id}
-              width='100%' 
-              height={this.props.opts.visual ? '450' : '166'} 
-              scrolling='no' 
-              frameBorder='no' 
-              src='https://w.soundcloud.com/player/?url='
-      />
+      React.createElement("iframe", {
+        id: this.props.id, 
+        width: "100%", 
+        height: this.props.opts.visual ? '450' : '166', 
+        scrolling: "no", 
+        frameBorder: "no", 
+        src: "https://w.soundcloud.com/player/?url="
+      })
     );
   },
 

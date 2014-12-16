@@ -42,12 +42,12 @@ describe('SoundCloud Component', function() {
 
   describe('instantiation', function() {
     it('loads the SoundCloud Widget API', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
       expect(load.mock.calls[0][0]).toBe('https://w.soundcloud.com/player/api.js');
     });
 
     it('should render a SoundCloud API ready iframe', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
       var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
 
       expect(iframe.getAttribute('id')).toBe('react-sc-widget');
@@ -55,19 +55,19 @@ describe('SoundCloud Component', function() {
     });
 
     it('should create a new SoundCloud widget', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
       expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-widget');
     });
   });
 
   describe('appearance', function() {
     it('should pass a set of `opts` into the widget', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
       expect(widgetMock.load.mock.calls[0][1]).toEqual(DEFAULT_OPTIONS);
     });
 
     it('should accept custom `opts`', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={{buying: false}}/>);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", opts: {buying: false}}));
       var options = DEFAULT_OPTIONS;
       options.buying = false;
 
@@ -75,14 +75,14 @@ describe('SoundCloud Component', function() {
     });
 
     it('should accept a custom iframe id', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' id='custom-id'/>);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", id: "custom-id"}));
       var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
 
       expect(iframe.getAttribute('id')).toBe('custom-id');
     });
 
     it('should readjust height if visual mode is enabled', function() {
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={{visual: true}}/>);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", opts: {visual: true}}));
       var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
 
       expect(iframe.getAttribute('height')).toBe('450');
@@ -100,7 +100,7 @@ describe('SoundCloud Component', function() {
        * changing `props.url`. This is a hack to get around that.
        */
       
-      Container = React.createClass({
+      Container = React.createClass({displayName: 'Container',
         getInitialState: function() {
           return {
             url: 'https://soundcloud.com/hucci/hitta'
@@ -117,16 +117,16 @@ describe('SoundCloud Component', function() {
 
         render: function() {
           return (
-            <div>
-              <button className='set-url-1' onClick={this._setUrl1}>URL 1</button>
-              <button className='set-url-2' onClick={this._setUrl2}>URL 1</button>
-              <SoundCloud url={this.state.url} />
-            </div>
+            React.createElement("div", null, 
+              React.createElement("button", {className: "set-url-1", onClick: this._setUrl1}, "URL 1"), 
+              React.createElement("button", {className: "set-url-2", onClick: this._setUrl2}, "URL 1"), 
+              React.createElement(SoundCloud, {url: this.state.url})
+            )
           );
         }
       });
 
-      container = TestUtils.renderIntoDocument(<Container />);
+      container = TestUtils.renderIntoDocument(React.createElement(Container, null));
     });
 
     it('should load a `url`', function() {
@@ -156,7 +156,7 @@ describe('SoundCloud Component', function() {
   describe('events', function() {
     it('should bind event handler props to playback events', function() {
       var playFn = function() {};
-      var soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' onPlay={playFn}/>);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", onPlay: playFn}));
       
       expect(widgetMock.bind.mock.calls.length).toBe(3);
       expect(widgetMock.bind.mock.calls[0]).toContain(playFn);
@@ -171,7 +171,7 @@ describe('SoundCloud Component', function() {
        * Instead, we'll just render it the old fashioned way.
        */
       
-      React.render(<SoundCloud url='' />, document.body);
+      React.render(React.createElement(SoundCloud, {url: ""}), document.body);
       React.unmountComponentAtNode(document.body);
 
       expect(widgetMock.unbind.mock.calls.length).toBe(3);

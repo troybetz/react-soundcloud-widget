@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 /**
  * Module dependencies
  */
@@ -10,7 +8,7 @@ var SoundCloud = require('../');
 var url = 'https://soundcloud.com/hucci/hitta';
 var url2 = 'https://soundcloud.com/robswire/knife-party-boss-mode-teaser';
 
-var Example = React.createClass({
+var Example = React.createClass({displayName: 'Example',
   getInitialState: function() {
     return {
       url: url
@@ -24,10 +22,10 @@ var Example = React.createClass({
 
   render: function() {
     return (
-      <div>
-        <button onClick={this._changeUrl}>Change URL</button>
-        <SoundCloud url={this.state.url} />
-      </div>
+      React.createElement("div", null, 
+        React.createElement("button", {onClick: this._changeUrl}, "Change URL"), 
+        React.createElement(SoundCloud, {url: this.state.url})
+      )
     );
   }
 });
@@ -36,4 +34,4 @@ var Example = React.createClass({
  * Render Example
  */
 
-React.render(<Example />, document.body);
+React.render(React.createElement(Example, null), document.body);

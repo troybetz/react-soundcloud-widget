@@ -2,7 +2,7 @@
   "name": "react-soundcloud-widget",
   "version": "1.0.2",
   "description": "react.js powered SoundCloud player component",
-  "main": "index.jsx",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/compedit/react-soundcloud-widget.git"
@@ -28,8 +28,6 @@
     "browserify": "^6.3.3",
     "http-server": "^0.7.3",
     "jest-cli": "^0.2.0",
-    "react-tools": "^0.12.1",
-    "reactify": "^0.17.1",
     "watchify": "^2.1.1"
   },
   "scripts": {
@@ -38,25 +36,17 @@
     "serve": "./node_modules/.bin/http-server ./example -s",
     "watch-js": "./node_modules/.bin/watchify ./example/app.js -o ./example/bundle.js"
   },
-  "browserify": {
-    "transform": [
-      "reactify"
-    ]
-  },
   "jest": {
-    "scriptPreprocessor": "./jest/preprocessor.js",
     "unmockedModulePathPatterns": [
       "./node_modules/react"
     ],
     "testPathIgnorePatterns": [
       "/example/",
-      "/jest/",
       "/lib/",
       "/node_modules/"
     ],
     "modulePathIgnorePatterns": [
       "/example/",
-      "/jest/",
       "/lib/"
     ]
   }
