@@ -11,7 +11,8 @@
     "soundcloud",
     "player",
     "widget",
-    "react"
+    "react",
+    "react-component"
   ],
   "author": "troy betz",
   "license": "MIT",
