@@ -19,13 +19,36 @@ $ npm install react-soundcloud-widget
 
 ## Usage
 
-```xml
-<SoundCloud url={string}
-            id={string} // defaults to 'react-sc-widget'
-            opts={object}
-            onPlay={function}
-            onPause={function}
-            onEnd={function} />
+```js
+<SoundCloud 
+  url={string}         // required
+  id={string}          // defaults -> 'react-sc-widget'
+  opts={object}        // defaults -> './lib/default-options'
+  onPlay={func}        // defaults -> noop
+  onPause={func}       // defaults -> noop
+  onEnd={func}         // defaults -> noop
+/> 
+```
+
+## Example
+
+```js
+var React = require('react');
+var SoundCloud = require('react-soundcloud-widget');
+
+var Example = React.createClass({
+  _onPlay: function() {
+    console.log('PLAYING');
+  },
+
+  render: function() {
+    return (
+      <SoundCloud url={'https://soundcloud.com/sylvanesso/coffee'} 
+                  onPlay={this._onPlay} />
+    );
+  }
+});
+
 ```
 
 ### Widget options
@@ -57,7 +80,7 @@ Boolean toggles passed via `props.opts`
 	// do stuff
  ```
  
-The component itself uses `SC.Widget.load`, `SC.Widget.bind` and `SC.Widget.unbind`internally. Using those methods outside the component may cause problems. 
+The component itself uses `SC.Widget.load`, `SC.Widget.bind` and `SC.Widget.unbind` internally. Using those methods outside the component may cause problems. 
 
 # License
 
