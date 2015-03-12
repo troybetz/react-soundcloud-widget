@@ -1,22 +1,13 @@
 jest.dontMock('../');
-jest.dontMock('object-assign');
 
 describe('SoundCloud Component', function() {
   var React = require('react/addons');
-  var load = require('load-script');
+  var createWidget = require('../lib/createWidget');
   var SoundCloud = require('../');
   var TestUtils = React.addons.TestUtils;
   var widgetMock;
 
   beforeEach(function() {
-
-    /**
-     * Mock out API loading util
-     */
-
-    load.mockImplementation(function(url, cb) {
-      return cb();
-    });
 
     /**
      * Mock out SoundCloud widget API
@@ -29,22 +20,21 @@ describe('SoundCloud Component', function() {
     };
 
     window.SC = {
-      Widget: jest.genMockFunction().mockReturnValue(widgetMock)
+      Widget: {
+        Events: {
+          PLAY: 'play',
+          PAUSE: 'pause',
+          FINISH: 'finish'
+        }
+      }
     };
 
-    window.SC.Widget.Events = {
-      PLAY: 'play',
-      PAUSE: 'pause',
-      FINISH: 'finish'
-    };
+    createWidget.mockImplementation(function(props, cb) {
+      return cb(widgetMock);
+    });
   });
 
   describe('instantiation', function() {
-    it('loads the SoundCloud Widget API', function() {
-      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
-      expect(load.mock.calls[0][0]).toBe('https://w.soundcloud.com/player/api.js');
-    });
-
     it('should render a SoundCloud API ready iframe', function() {
       var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
       var iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
@@ -55,7 +45,7 @@ describe('SoundCloud Component', function() {
 
     it('should create a new SoundCloud widget', function() {
       var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
-      expect(SC.Widget.mock.calls[0][0]).toBe('react-sc-widget');
+      expect(createWidget.mock.calls[0][0]).toBe('react-sc-widget');
     });
   });
 
