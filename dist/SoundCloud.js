@@ -1,13 +1,22 @@
 "use strict";
 
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
 /**
  * Module dependencies
  */
 
-var React = require("react");
-var createWidget = require("./lib/createWidget");
+var React = _interopRequire(require("react"));
 
-var internalWidget;
+var createWidget = _interopRequire(require("./lib/createWidget"));
+
+var internalWidget = undefined;
+
+/**
+ * Do nothing.
+ */
+
+var noop = function () {};
 
 /**
  * Create a new `SoundCloud` component.
@@ -52,10 +61,12 @@ var SoundCloud = React.createClass({
   },
 
   componentDidMount: function componentDidMount() {
-    createWidget(this.props.id, (function (widget) {
-      this._setupWidget(widget);
-      this._reloadWidget();
-    }).bind(this));
+    var _this = this;
+
+    createWidget(this.props.id, function (widget) {
+      _this._setupWidget(widget);
+      _this._reloadWidget();
+    });
   },
 
   componentDidUpdate: function componentDidUpdate() {
@@ -67,8 +78,7 @@ var SoundCloud = React.createClass({
   },
 
   render: function render() {
-    return React.createElement("iframe", {
-      id: this.props.id,
+    return React.createElement("iframe", { id: this.props.id,
       width: "100%",
       height: this.props.opts.visual ? "450" : "166",
       scrolling: "no",
@@ -117,12 +127,6 @@ var SoundCloud = React.createClass({
     internalWidget.unbind(window.SC.Widget.Events.FINISH);
   }
 });
-
-/**
- * Do nothing
- */
-
-function noop() {}
 
 /**
  * Expose `SoundCloud` component

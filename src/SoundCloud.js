@@ -2,10 +2,16 @@
  * Module dependencies
  */
 
-var React = require('react');
-var createWidget = require('./lib/createWidget');
+import React from 'react';
+import createWidget from './lib/createWidget';
 
-var internalWidget;
+let internalWidget;
+
+/**
+ * Do nothing.
+ */
+
+const noop = () => {};
 
 /**
  * Create a new `SoundCloud` component.
@@ -14,7 +20,7 @@ var internalWidget;
  * HTML5 widget from SoundCloud. Programmatic control not included.
  */
 
-var SoundCloud = React.createClass({
+const SoundCloud = React.createClass({
   propTypes: {
 
     // url to play. It's kept in sync, changing it will
@@ -33,7 +39,7 @@ var SoundCloud = React.createClass({
     onEnd: React.PropTypes.func
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       id: 'react-sc-widget',
       opts: {},
@@ -43,35 +49,34 @@ var SoundCloud = React.createClass({
     };
   },
 
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate(nextProps) {
     return nextProps.url !== this.props.url;
   },
 
-  componentDidMount: function() {
-    createWidget(this.props.id, function(widget) {
+  componentDidMount() {
+    createWidget(this.props.id, (widget) => {
       this._setupWidget(widget);
       this._reloadWidget();
-    }.bind(this));
+    });
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this._reloadWidget();
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this._unbindEvents();
   },
 
-  render: function() {
+  render() {
     return (
-      React.createElement("iframe", {
-        id: this.props.id,
-        width: "100%",
-        height: this.props.opts.visual ? '450' : '166',
-        scrolling: "no",
-        frameBorder: "no",
-        src: "https://w.soundcloud.com/player/?url="
-      })
+      <iframe id={this.props.id}
+              width='100%'
+              height={this.props.opts.visual ? '450' : '166'}
+              scrolling='no'
+              frameBorder='no'
+              src='https://w.soundcloud.com/player/?url='
+      />
     );
   },
 
@@ -81,7 +86,7 @@ var SoundCloud = React.createClass({
    * @param {Object} Widget
    */
 
-  _setupWidget: function(widget) {
+  _setupWidget(widget) {
     internalWidget = widget;
     this._bindEvents();
   },
@@ -90,7 +95,7 @@ var SoundCloud = React.createClass({
    * Reload the embedded iframe with a new widget.
    */
 
-  _reloadWidget: function() {
+  _reloadWidget() {
     internalWidget.load(this.props.url, this.props.opts);
   },
 
@@ -99,7 +104,7 @@ var SoundCloud = React.createClass({
    * chain to the parent component if needed.
    */
 
-  _bindEvents: function() {
+  _bindEvents() {
     internalWidget.bind(window.SC.Widget.Events.PLAY, this.props.onPlay);
     internalWidget.bind(window.SC.Widget.Events.PAUSE, this.props.onPause);
     internalWidget.bind(window.SC.Widget.Events.FINISH, this.props.onEnd);
@@ -109,7 +114,7 @@ var SoundCloud = React.createClass({
    * Remove all event bindings.
    */
 
-  _unbindEvents: function() {
+  _unbindEvents() {
     internalWidget.unbind(window.SC.Widget.Events.PLAY);
     internalWidget.unbind(window.SC.Widget.Events.PAUSE);
     internalWidget.unbind(window.SC.Widget.Events.FINISH);
@@ -117,13 +122,7 @@ var SoundCloud = React.createClass({
 });
 
 /**
- * Do nothing
- */
-
-function noop() {}
-
-/**
  * Expose `SoundCloud` component
  */
 
-module.exports = SoundCloud;
+export default SoundCloud;
