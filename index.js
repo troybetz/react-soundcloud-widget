@@ -43,25 +43,19 @@ var SoundCloud = React.createClass({
     };
   },
 
-  componentDidMount: function() {
-    var _this = this;
-
-    createWidget(this.props.id, function(widget) {
-      _this._setupWidget(widget);
-      _this._loadUrl(_this.props.url, _this.props.opts);
-    });
+  shouldComponentUpdate: function(nextProps) {
+    return nextProps.url !== this.props.url;
   },
 
-  /**
-   * If the `url` has changed, load it.
-   *
-   * @param {Object} nextProps
-   */
+  componentDidMount: function() {
+    createWidget(this.props.id, function(widget) {
+      this._setupWidget(widget);
+      this._reloadWidget();
+    }.bind(this));
+  },
 
-  componentWillUpdate: function(nextProps) {
-    if (nextProps.url !== this.props.url) {
-      this._loadUrl(nextProps.url, nextProps.opts);
-    }
+  componentDidUpdate: function() {
+    this._reloadWidget();
   },
 
   componentWillUnmount: function() {
@@ -93,15 +87,11 @@ var SoundCloud = React.createClass({
   },
 
   /**
-   * Load a `url` into the widget. This also causes the widget to refresh,
-   * making it the only chance to change its appearance via `opts`.
-   *
-   * @param {String} url
-   * @param {Object} opts
+   * Reload the embedded iframe with a new widget.
    */
 
-  _loadUrl: function(url, opts) {
-    internalWidget.load(url, opts);
+  _reloadWidget: function() {
+    internalWidget.load(this.props.url, this.props.opts);
   },
 
   /**
