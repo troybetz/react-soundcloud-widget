@@ -21,13 +21,13 @@
   },
   "homepage": "https://github.com/compedit/react-soundcloud-widget",
   "dependencies": {
-    "load-script": "0.0.5",
+    "load-script": "^1.0.0",
     "object-assign": "^2.0.0"
   },
   "devDependencies": {
-    "browserify": "^6.3.3",
+    "browserify": "^9.0.3",
     "http-server": "^0.7.3",
-    "jest-cli": "^0.2.0",
+    "jest-cli": "^0.4.0",
     "watchify": "^2.1.1"
   },
   "peerDependencies": {
