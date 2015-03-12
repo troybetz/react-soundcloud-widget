@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
+    "babel-core": "^4.7.8",
+    "babel-jest": "^4.0.0",
     "css-loader": "^0.9.1",
     "jest-cli": "^0.4.0",
     "style-loader": "^0.8.3",
@@ -38,6 +40,13 @@
     "example": "webpack --config example/webpack.config.js"
   },
   "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "testFileExtensions": [
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js"
+    ],
     "unmockedModulePathPatterns": [
       "./node_modules/react"
     ],
@@ -46,7 +55,8 @@
       "/lib/",
       "/node_modules/"
     ],
-    "modulePathIgnorePatterns": [
+    "testPathIgnorePatterns": [
+      "/node_modules/",
       "/example/",
       "/lib/"
     ]
