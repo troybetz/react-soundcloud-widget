@@ -2,7 +2,7 @@
   "name": "react-soundcloud-widget",
   "version": "1.1.1",
   "description": "react.js powered SoundCloud player component",
-  "main": "index.js",
+  "main": "dist/SoundCloud.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/compedit/react-soundcloud-widget.git"
@@ -37,6 +37,7 @@
   },
   "scripts": {
     "test": "jest",
+    "dist": "babel src --out-dir dist",
     "example": "webpack --config example/webpack.config.js"
   },
   "jest": {
@@ -50,15 +51,8 @@
     "unmockedModulePathPatterns": [
       "./node_modules/react"
     ],
-    "testPathIgnorePatterns": [
-      "/example/",
-      "/lib/",
-      "/node_modules/"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/example/",
-      "/lib/"
+    "testPathDirs": [
+      "src"
     ]
   }
 }

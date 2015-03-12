@@ -1,8 +1,8 @@
-jest.dontMock('../');
+jest.dontMock('../SoundCloud');
 
 import React from 'react/addons';
 import createWidget from '../lib/createWidget';
-import SoundCloud from '../';
+import SoundCloud from '../SoundCloud';
 
 const { TestUtils } = React.addons;
 let widgetMock;
