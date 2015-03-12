@@ -21,8 +21,7 @@
   },
   "homepage": "https://github.com/compedit/react-soundcloud-widget",
   "dependencies": {
-    "load-script": "^1.0.0",
-    "object-assign": "^2.0.0"
+    "load-script": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",

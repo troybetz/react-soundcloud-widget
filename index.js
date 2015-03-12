@@ -4,8 +4,6 @@
 
 var React = require('react');
 var load = require('load-script');
-var assign = require('object-assign');
-var DEFAULT_OPTIONS = require('./lib/default-options');
 
 var internalWidget;
 
@@ -38,7 +36,7 @@ var SoundCloud = React.createClass({
   getDefaultProps: function() {
     return {
       id: 'react-sc-widget',
-      opts: DEFAULT_OPTIONS,
+      opts: {},
       onPlay: noop,
       onPause: noop,
       onEnd: noop
@@ -103,7 +101,6 @@ var SoundCloud = React.createClass({
    */
 
   _loadUrl: function(url, opts) {
-    opts = assign(DEFAULT_OPTIONS, opts);
     internalWidget.load(url, opts);
   },
 

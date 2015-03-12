@@ -5,7 +5,6 @@ describe('SoundCloud Component', function() {
   var React = require('react/addons');
   var load = require('load-script');
   var SoundCloud = require('../');
-  var DEFAULT_OPTIONS = require('../lib/default-options');
   var TestUtils = React.addons.TestUtils;
   var widgetMock;
 
@@ -14,7 +13,7 @@ describe('SoundCloud Component', function() {
     /**
      * Mock out API loading util
      */
-    
+
     load.mockImplementation(function(url, cb) {
       return cb();
     });
@@ -27,7 +26,7 @@ describe('SoundCloud Component', function() {
       load: jest.genMockFunction(),
       bind: jest.genMockFunction(),
       unbind: jest.genMockFunction()
-    }; 
+    };
 
     window.SC = {
       Widget: jest.genMockFunction().mockReturnValue(widgetMock)
@@ -62,16 +61,12 @@ describe('SoundCloud Component', function() {
 
   describe('appearance', function() {
     it('should pass a set of `opts` into the widget', function() {
-      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: ""}));
-      expect(widgetMock.load.mock.calls[0][1]).toEqual(DEFAULT_OPTIONS);
-    });
+      var opts = {
+        buying: false
+      };
 
-    it('should accept custom `opts`', function() {
-      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", opts: {buying: false}}));
-      var options = DEFAULT_OPTIONS;
-      options.buying = false;
-
-      expect(widgetMock.load.mock.calls[0][1]).toEqual(options);
+      var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", opts: opts}));
+      expect(widgetMock.load.mock.calls[0][1]).toEqual(opts);
     });
 
     it('should accept a custom iframe id', function() {
@@ -99,7 +94,7 @@ describe('SoundCloud Component', function() {
        * Using `forceUpdate` doesn't work with `componentWillUpdate` when
        * changing `props.url`. This is a hack to get around that.
        */
-      
+
       Container = React.createClass({displayName: 'Container',
         getInitialState: function() {
           return {
@@ -117,9 +112,9 @@ describe('SoundCloud Component', function() {
 
         render: function() {
           return (
-            React.createElement("div", null, 
-              React.createElement("button", {className: "set-url-1", onClick: this._setUrl1}, "URL 1"), 
-              React.createElement("button", {className: "set-url-2", onClick: this._setUrl2}, "URL 1"), 
+            React.createElement("div", null,
+              React.createElement("button", {className: "set-url-1", onClick: this._setUrl1}, "URL 1"),
+              React.createElement("button", {className: "set-url-2", onClick: this._setUrl2}, "URL 1"),
               React.createElement(SoundCloud, {url: this.state.url})
             )
           );
@@ -131,7 +126,7 @@ describe('SoundCloud Component', function() {
 
     it('should load a `url`', function() {
       var soundcloud = TestUtils.findRenderedComponentWithType(container, SoundCloud);
-      
+
       expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/hucci/hitta');
     });
 
@@ -157,7 +152,7 @@ describe('SoundCloud Component', function() {
     it('should bind event handler props to playback events', function() {
       var playFn = function() {};
       var soundcloud = TestUtils.renderIntoDocument(React.createElement(SoundCloud, {url: "", onPlay: playFn}));
-      
+
       expect(widgetMock.bind.mock.calls.length).toBe(3);
       expect(widgetMock.bind.mock.calls[0]).toContain(playFn);
     });
@@ -170,7 +165,7 @@ describe('SoundCloud Component', function() {
        *
        * Instead, we'll just render it the old fashioned way.
        */
-      
+
       React.render(React.createElement(SoundCloud, {url: ""}), document.body);
       React.unmountComponentAtNode(document.body);
 
