@@ -34,7 +34,7 @@
     "webpack": "^1.7.3"
   },
   "peerDependencies": {
-    "react": "^0.12.1"
+    "react": "^0.13.0"
   },
   "scripts": {
     "test": "jest",

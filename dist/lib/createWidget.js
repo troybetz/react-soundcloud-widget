@@ -16,7 +16,6 @@ var load = _interopRequire(require("load-script"));
  */
 
 var createWidget = function (id, cb) {
-  // load the API, it's namespaced as `window.SC`
   return load("https://w.soundcloud.com/player/api.js", function (err) {
     return cb(window.SC.Widget(id));
   });

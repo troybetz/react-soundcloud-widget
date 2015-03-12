@@ -37,7 +37,7 @@ describe('SoundCloud Component', () => {
   describe('instantiation', () => {
     it('should render a SoundCloud API ready iframe', () => {
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
-      const iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('id')).toBe('react-sc-widget');
       expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=');
@@ -61,7 +61,7 @@ describe('SoundCloud Component', () => {
 
     it('should accept a custom iframe id', () => {
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' id='custom-id' />);
-      const iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('id')).toBe('custom-id');
     });
@@ -72,7 +72,7 @@ describe('SoundCloud Component', () => {
       };
 
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
-      const iframe = TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe').getDOMNode();
+      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('height')).toBe('450');
     });
@@ -85,12 +85,15 @@ describe('SoundCloud Component', () => {
      * changing `props.url`. This is a hack to get around that.
      */
 
-    const Container = React.createClass({displayName: 'Container',
-      getInitialState() {
-        return {
+    class Container extends React.Component {
+      constructor() {
+        this.state = {
           url: 'https://soundcloud.com/hucci/hitta'
         };
-      },
+
+        this._setUrl1 = this._setUrl1.bind(this);
+        this._setUrl2 = this._setUrl2.bind(this);
+      }
 
       render() {
         return (
@@ -100,16 +103,16 @@ describe('SoundCloud Component', () => {
             <SoundCloud url={this.state.url }/>
           </div>
         );
-      },
+      }
 
       _setUrl1() {
         this.setState({url: 'https://soundcloud.com/hucci/hitta'});
-      },
+      }
 
       _setUrl2() {
         this.setState({url: 'https://soundcloud.com/hudsonmohawke/chimes'});
       }
-    });
+    }
 
     it('should load a `url`', () => {
       const container = TestUtils.renderIntoDocument(<Container />);

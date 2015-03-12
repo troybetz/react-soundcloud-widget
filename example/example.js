@@ -9,12 +9,14 @@ import './example.css';
 const url = 'https://soundcloud.com/sylvanesso/coffee';
 const url2 = 'https://soundcloud.com/hudsonmohawke/chimes';
 
-const Example = React.createClass({
-  getInitialState() {
-    return {
+class Example extends React.Component {
+  constructor() {
+    this.state = {
       url: url
     };
-  },
+
+    this._changeUrl = this._changeUrl.bind(this);
+  }
 
   render() {
     const opts = {
@@ -38,25 +40,25 @@ const Example = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   _onPlay() {
     console.log('PLAYING');
-  },
+  }
 
   _onPause() {
     console.log('PAUSED');
-  },
+  }
 
   _onEnd() {
     console.log('ENDED');
-  },
+  }
 
   _changeUrl() {
     const newUrl = this.state.url === url ? url2 : url;
     this.setState({url: newUrl});
   }
-});
+}
 
 /**
  * Render Example
