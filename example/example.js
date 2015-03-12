@@ -2,60 +2,59 @@
  * Module dependencies
  */
 
-var React = require('react');
-var SoundCloud = require('../');
+import React from 'react';
+import SoundCloud from '../';
+import './example.css';
 
-// styles
-require('./example.css');
+const url = 'https://soundcloud.com/sylvanesso/coffee';
+const url2 = 'https://soundcloud.com/hudsonmohawke/chimes';
 
-var url = 'https://soundcloud.com/sylvanesso/coffee';
-var url2 = 'https://soundcloud.com/hudsonmohawke/chimes';
-
-var Example = React.createClass({displayName: 'Example',
-  getInitialState: function() {
+const Example = React.createClass({
+  getInitialState() {
     return {
       url: url
     };
   },
 
-  _onPlay: function() {
+  render() {
+    const opts = {
+      visual: true,
+      buying: false,
+      liking: false,
+      sharing: false
+    };
+
+    return (
+      <div className='example'>
+        <SoundCloud url={this.state.url}
+                    opts={opts}
+                    onPlay={this._onPlay}
+                    onPause={this._onPause}
+                    onEnd={this._onEnd}
+        />
+
+        <div className='changeUrl'>
+          <button onClick={this._changeUrl}>Change url</button>
+        </div>
+      </div>
+    );
+  },
+
+  _onPlay() {
     console.log('PLAYING');
   },
 
-  _onPause: function() {
+  _onPause() {
     console.log('PAUSED');
   },
 
-  _onEnd: function() {
+  _onEnd() {
     console.log('ENDED');
   },
 
-  _changeUrl: function() {
-    var newUrl = this.state.url === url ? url2 : url;
+  _changeUrl() {
+    const newUrl = this.state.url === url ? url2 : url;
     this.setState({url: newUrl});
-  },
-
-  render: function() {
-    return (
-      React.createElement('div', {className: 'example'},
-        React.createElement(SoundCloud, {
-          url: this.state.url,
-          opts: {
-            visual: true,
-            buying: false,
-            liking: false,
-            sharing: false
-          },
-          onPlay: this._onPlay,
-          onPause: this._onPause,
-          onEnd: this._onEnd,
-        }),
-
-        React.createElement('div', {className: 'changeUrl'},
-          React.createElement('button', {onClick: this._changeUrl}, 'Change url')
-        )
-      )
-    );
   }
 });
 
@@ -63,4 +62,4 @@ var Example = React.createClass({displayName: 'Example',
  * Render Example
  */
 
-React.render(React.createElement(Example, null), document.querySelector('section.content'));
+React.render(<Example />, document.querySelector('section.content'));
