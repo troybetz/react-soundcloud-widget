@@ -7,6 +7,8 @@ var load = require('load-script');
 var assign = require('object-assign');
 var DEFAULT_OPTIONS = require('./lib/default-options');
 
+var internalWidget;
+
 /**
  * Create a new `SoundCloud` component.
  *
@@ -43,12 +45,6 @@ var SoundCloud = React.createClass({
     };
   },
 
-  getInitialState: function() {
-    return {
-      widget: null
-    };
-  },
-
   componentDidMount: function() {
     var _this = this;
 
@@ -63,7 +59,7 @@ var SoundCloud = React.createClass({
    *
    * @param {Object} nextProps
    */
-  
+
   componentWillUpdate: function(nextProps) {
     if (nextProps.url !== this.props.url) {
       this._loadUrl(nextProps.url, nextProps.opts);
@@ -77,11 +73,11 @@ var SoundCloud = React.createClass({
   render: function() {
     return (
       React.createElement("iframe", {
-        id: this.props.id, 
-        width: "100%", 
-        height: this.props.opts.visual ? '450' : '166', 
-        scrolling: "no", 
-        frameBorder: "no", 
+        id: this.props.id,
+        width: "100%",
+        height: this.props.opts.visual ? '450' : '166',
+        scrolling: "no",
+        frameBorder: "no",
         src: "https://w.soundcloud.com/player/?url="
       })
     );
@@ -94,7 +90,7 @@ var SoundCloud = React.createClass({
    */
 
   _setupWidget: function(widget) {
-    this.setState({widget: widget});
+    internalWidget = widget;
     this._bindEvents();
   },
 
@@ -108,7 +104,7 @@ var SoundCloud = React.createClass({
 
   _loadUrl: function(url, opts) {
     opts = assign(DEFAULT_OPTIONS, opts);
-    this.state.widget.load(url, opts);
+    internalWidget.load(url, opts);
   },
 
   /**
@@ -117,9 +113,9 @@ var SoundCloud = React.createClass({
    */
 
   _bindEvents: function() {
-    this.state.widget.bind(window.SC.Widget.Events.PLAY, this.props.onPlay);
-    this.state.widget.bind(window.SC.Widget.Events.PAUSE, this.props.onPause);
-    this.state.widget.bind(window.SC.Widget.Events.FINISH, this.props.onEnd);
+    internalWidget.bind(window.SC.Widget.Events.PLAY, this.props.onPlay);
+    internalWidget.bind(window.SC.Widget.Events.PAUSE, this.props.onPause);
+    internalWidget.bind(window.SC.Widget.Events.FINISH, this.props.onEnd);
   },
 
   /**
@@ -127,9 +123,9 @@ var SoundCloud = React.createClass({
    */
 
   _unbindEvents: function() {
-    this.state.widget.unbind(window.SC.Widget.Events.PLAY);
-    this.state.widget.unbind(window.SC.Widget.Events.PAUSE);
-    this.state.widget.unbind(window.SC.Widget.Events.FINISH);
+    internalWidget.unbind(window.SC.Widget.Events.PLAY);
+    internalWidget.unbind(window.SC.Widget.Events.PAUSE);
+    internalWidget.unbind(window.SC.Widget.Events.FINISH);
   }
 });
 
