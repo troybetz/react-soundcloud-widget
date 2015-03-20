@@ -8,18 +8,11 @@ const { TestUtils } = React.addons;
 let widgetMock;
 
 describe('SoundCloud Component', () => {
-
   beforeEach(() => {
 
     /**
      * Mock out SoundCloud widget API
      */
-
-    widgetMock = {
-      load: jest.genMockFunction(),
-      bind: jest.genMockFunction(),
-      unbind: jest.genMockFunction()
-    };
 
     window.SC = {
       Widget: {
@@ -29,6 +22,12 @@ describe('SoundCloud Component', () => {
           FINISH: 'finish'
         }
       }
+    };
+
+    widgetMock = {
+      load: jest.genMockFunction(),
+      bind: jest.genMockFunction(),
+      unbind: jest.genMockFunction()
     };
 
     createWidget.mockImplementation((props, cb) => cb(widgetMock));
@@ -43,8 +42,15 @@ describe('SoundCloud Component', () => {
       expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=');
     });
 
+    it('should accept a custom iframe id', () => {
+      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' id='custom-id' />);
+      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
+
+      expect(iframe.getAttribute('id')).toBe('custom-id');
+    });
+
     it('should create a new SoundCloud widget', () => {
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      TestUtils.renderIntoDocument(<SoundCloud url='' />);
       expect(createWidget.mock.calls[0][0]).toBe('react-sc-widget');
     });
   });
@@ -55,15 +61,8 @@ describe('SoundCloud Component', () => {
         buying: false
       };
 
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
+      TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
       expect(widgetMock.load.mock.calls[0][1]).toEqual(opts);
-    });
-
-    it('should accept a custom iframe id', () => {
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' id='custom-id' />);
-      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
-
-      expect(iframe.getAttribute('id')).toBe('custom-id');
     });
 
     it('should readjust height if visual mode is enabled', ()=>  {
@@ -73,71 +72,64 @@ describe('SoundCloud Component', () => {
 
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
       const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
-
       expect(iframe.getAttribute('height')).toBe('450');
     });
   });
 
   describe('functionality', () => {
-
-    /**
-     * Using `forceUpdate` doesn't work with `componentWillUpdate` when
-     * changing `props.url`. This is a hack to get around that.
-     */
-
     class Container extends React.Component {
       constructor() {
         this.state = {
-          url: 'https://soundcloud.com/hucci/hitta'
+          url: 'https://soundcloud.com/sylvanesso/coffee'
         };
 
-        this._setUrl1 = this._setUrl1.bind(this);
-        this._setUrl2 = this._setUrl2.bind(this);
+        this._changeUrl = this._changeUrl.bind(this);
       }
 
       render() {
         return (
           <div>
-            <button className='set-url-1' onClick={this._setUrl1}>SET URL 1</button>
-            <button className='set-url-2' onClick={this._setUrl2}>SET URL 2</button>
-            <SoundCloud url={this.state.url }/>
+            <SoundCloud url={this.state.url} />
+            <button onClick={this._changeUrl}>Change url</button>
           </div>
         );
       }
 
-      _setUrl1() {
-        this.setState({url: 'https://soundcloud.com/hucci/hitta'});
-      }
-
-      _setUrl2() {
-        this.setState({url: 'https://soundcloud.com/hudsonmohawke/chimes'});
+      _changeUrl() {
+        this.setState({
+          url: 'https://soundcloud.com/hudsonmohawke/chimes'
+        });
       }
     }
 
     it('should load a `url`', () => {
       const container = TestUtils.renderIntoDocument(<Container />);
-      const soundcloud = TestUtils.findRenderedComponentWithType(container, SoundCloud);
-
-      expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/hucci/hitta');
+      expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/sylvanesso/coffee');
     });
 
     it('should load new `url`s', () => {
       const container = TestUtils.renderIntoDocument(<Container />);
-      const toggleButton = TestUtils.findRenderedDOMComponentWithClass(container, 'set-url-2');
+      const changeUrl = TestUtils.findRenderedDOMComponentWithTag(container, 'button');
 
-      TestUtils.Simulate.click(toggleButton);
+      TestUtils.Simulate.click(changeUrl);
 
       expect(widgetMock.load.mock.calls.length).toBe(2);
       expect(widgetMock.load.mock.calls[1][0]).toBe('https://soundcloud.com/hudsonmohawke/chimes');
     });
 
-    it('should not load the same `url` twice', () => {
+    it('should only reload for new `url`s', () => {
       const container = TestUtils.renderIntoDocument(<Container />);
-      const toggleButton = TestUtils.findRenderedDOMComponentWithClass(container, 'set-url-1');
+      const changeUrl = TestUtils.findRenderedDOMComponentWithTag(container, 'button');
 
-      TestUtils.Simulate.click(toggleButton);
+      // switch `url` to 'https://soundcloud.com/hudsonmohawke/chimes'
+      TestUtils.Simulate.click(changeUrl);
+      expect(widgetMock.load.mock.calls.length).toBe(2);
 
-      expect(widgetMock.load.mock.calls.length).toBe(1);
+
+      // calling it again won't do anything since `url` is already
+      // 'https://soundcloud.com/hudsonmohawke/chimes'
+      TestUtils.Simulate.click(changeUrl);
+      expect(widgetMock.load.mock.calls.length).toBe(2);
     });
   });
 
