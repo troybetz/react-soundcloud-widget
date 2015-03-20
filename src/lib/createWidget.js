@@ -5,7 +5,7 @@
 import load from 'load-script';
 
 /**
- * Create a new `widget` by requesting and using the SoundCloud Widget API.
+ * Create a new widget by requesting and using the SoundCloud Widget API.
  *
  * @param {String} id - reference to iframe element for widget
  * @param {Function} cb

@@ -10,13 +10,27 @@ import createWidget from './lib/createWidget';
  *
  * This is essentially a glorified wrapper over the existing
  * HTML5 widget from SoundCloud. Programmatic control not included.
+ *
+ * NOTE: Changing `props.url` will cause the component to load it.
+ * Unfortunately, SoundCloud adds an entry to `window.history` every time
+ * a new url is loaded, so changing `props.url` __will__ break the back button.
  */
 
 class SoundCloud extends React.Component {
+
+  /**
+   * @param {Object} props
+   */
+
   constructor(props) {
     super(props);
     this._internalWidget = null;
   }
+
+  /**
+   * @param {Object} nextProps
+   * @returns {Boolean}
+   */
 
   shouldComponentUpdate(nextProps) {
     return nextProps.url !== this.props.url;
@@ -34,6 +48,10 @@ class SoundCloud extends React.Component {
     this._unbindEvents();
   }
 
+  /**
+   * @returns {Object}
+   */
+
   render() {
     return (
       <iframe id={this.props.id}
@@ -47,7 +65,8 @@ class SoundCloud extends React.Component {
   }
 
   /**
-   * Create a new html5 widget and load it with some data.
+   * Called on the initial render, this uses the rendered iframe
+   * as a base for creating a new `_internalWidget`.
    */
 
   _createWidget() {
@@ -69,7 +88,12 @@ class SoundCloud extends React.Component {
   }
 
   /**
-   * Reload the embedded iframe with a new widget.
+   * This is the only way to manipulate the embedded iframe, it's essentially
+   * refreshed and reloaded.
+   *
+   * NOTE: SoundCloud adds an entry to `window.history` after reloading. This is
+   * __really__ annoying, but unavoidable at the moment, so basically every
+   * time the url changes it breaks the back button. Super bummer.
    */
 
   _reloadWidget() {

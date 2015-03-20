@@ -23,9 +23,18 @@ var createWidget = _interopRequire(require("./lib/createWidget"));
  *
  * This is essentially a glorified wrapper over the existing
  * HTML5 widget from SoundCloud. Programmatic control not included.
+ *
+ * NOTE: Changing `props.url` will cause the component to load it.
+ * Unfortunately, SoundCloud adds an entry to `window.history` every time
+ * a new url is loaded, so changing `props.url` __will__ break the back button.
  */
 
 var SoundCloud = (function (_React$Component) {
+
+  /**
+   * @param {Object} props
+   */
+
   function SoundCloud(props) {
     _classCallCheck(this, SoundCloud);
 
@@ -37,6 +46,12 @@ var SoundCloud = (function (_React$Component) {
 
   _createClass(SoundCloud, {
     shouldComponentUpdate: {
+
+      /**
+       * @param {Object} nextProps
+       * @returns {Boolean}
+       */
+
       value: function shouldComponentUpdate(nextProps) {
         return nextProps.url !== this.props.url;
       }
@@ -57,6 +72,11 @@ var SoundCloud = (function (_React$Component) {
       }
     },
     render: {
+
+      /**
+       * @returns {Object}
+       */
+
       value: function render() {
         return React.createElement("iframe", { id: this.props.id,
           width: "100%",
@@ -70,7 +90,8 @@ var SoundCloud = (function (_React$Component) {
     _createWidget: {
 
       /**
-       * Create a new html5 widget and load it with some data.
+       * Called on the initial render, this uses the rendered iframe
+       * as a base for creating a new `_internalWidget`.
        */
 
       value: function _createWidget() {
@@ -98,7 +119,12 @@ var SoundCloud = (function (_React$Component) {
     _reloadWidget: {
 
       /**
-       * Reload the embedded iframe with a new widget.
+       * This is the only way to manipulate the embedded iframe, it's essentially
+       * refreshed and reloaded.
+       *
+       * NOTE: SoundCloud adds an entry to `window.history` after reloading. This is
+       * __really__ annoying, but unavoidable at the moment, so basically every
+       * time the url changes it breaks the back button. Super bummer.
        */
 
       value: function _reloadWidget() {
