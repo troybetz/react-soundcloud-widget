@@ -2,65 +2,66 @@
  * Module dependencies
  */
 
-var React = require('react');
-var SoundCloud = require('../');
+import React from 'react';
+import SoundCloud from '../';
+import './example.css';
 
-// styles
-require('./example.css');
+const url = 'https://soundcloud.com/sylvanesso/coffee';
+const url2 = 'https://soundcloud.com/hudsonmohawke/chimes';
 
-var url = 'https://soundcloud.com/sylvanesso/coffee';
-var url2 = 'https://soundcloud.com/hudsonmohawke/chimes';
-
-var Example = React.createClass({displayName: 'Example',
-  getInitialState: function() {
-    return {
+class Example extends React.Component {
+  constructor() {
+    this.state = {
       url: url
     };
-  },
 
-  _onPlay: function() {
-    console.log('PLAYING');
-  },
+    this._changeUrl = this._changeUrl.bind(this);
+  }
 
-  _onPause: function() {
-    console.log('PAUSED');
-  },
+  render() {
+    const opts = {
+      visual: true,
+      buying: false,
+      liking: false,
+      sharing: false
+    };
 
-  _onEnd: function() {
-    console.log('ENDED');
-  },
-
-  _changeUrl: function() {
-    var newUrl = this.state.url === url ? url2 : url;
-    this.setState({url: newUrl});
-  },
-
-  render: function() {
     return (
-      React.createElement('div', {className: 'example'},
-        React.createElement(SoundCloud, {
-          url: this.state.url,
-          opts: {
-            visual: true,
-            buying: false,
-            liking: false,
-            sharing: false
-          },
-          onPlay: this._onPlay,
-          onPause: this._onPause,
-          onEnd: this._onEnd,
-        }),
+      <div className='example'>
+        <SoundCloud url={this.state.url}
+                    opts={opts}
+                    onPlay={this._onPlay}
+                    onPause={this._onPause}
+                    onEnd={this._onEnd}
+        />
 
-        React.createElement('div', {className: 'changeUrl'},
-          React.createElement('button', {onClick: this._changeUrl}, 'Change url')
-        )
-      )
+        <div className='changeUrl'>
+          <button onClick={this._changeUrl}>Change url</button>
+        </div>
+      </div>
     );
   }
-});
+
+  _onPlay() {
+    console.log('PLAYING');
+  }
+
+  _onPause() {
+    console.log('PAUSED');
+  }
+
+  _onEnd() {
+    console.log('ENDED');
+  }
+
+  _changeUrl() {
+    const newUrl = this.state.url === url ? url2 : url;
+    this.setState({url: newUrl});
+  }
+}
 
 /**
  * Render Example
  */
 
-React.render(React.createElement(Example, null), document.querySelector('section.content'));
+React.render(<Example />, document.querySelector('section.content'));
