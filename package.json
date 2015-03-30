@@ -1,0 +1,54 @@
+{
+  "name": "react-soundcloud-widget",
+  "version": "2.0.0",
+  "description": "react.js powered SoundCloud player component",
+  "main": "dist/SoundCloud.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/compedit/react-soundcloud-widget.git"
+  },
+  "keywords": [
+    "soundcloud",
+    "player",
+    "widget",
+    "react",
+    "react-component"
+  ],
+  "author": "troy betz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/compedit/react-soundcloud-widget/issues"
+  },
+  "homepage": "https://github.com/compedit/react-soundcloud-widget",
+  "dependencies": {
+    "load-script": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel": "^4.7.16",
+    "babel-jest": "^4.0.0",
+    "jest-cli": "^0.4.0"
+  },
+  "peerDependencies": {
+    "react": "^0.13.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "compile": "babel src --out-dir dist",
+    "prepublish": "npm run compile"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "testFileExtensions": [
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "unmockedModulePathPatterns": [
+      "./node_modules/react"
+    ],
+    "testPathDirs": [
+      "src"
+    ]
+  }
+}
