@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 /**
  * Module dependencies
  */
