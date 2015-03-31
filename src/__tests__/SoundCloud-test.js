@@ -65,7 +65,7 @@ describe('SoundCloud Component', () => {
       expect(widgetMock.load.mock.calls[0][1]).toEqual(opts);
     });
 
-    it('should readjust height if visual mode is enabled', ()=>  {
+    it('should readjust height if visual mode is enabled', () => {
       const opts = {
         visual: true
       };
@@ -103,7 +103,7 @@ describe('SoundCloud Component', () => {
     }
 
     it('should load a `url`', () => {
-      const container = TestUtils.renderIntoDocument(<Container />);
+      TestUtils.renderIntoDocument(<Container />);
       expect(widgetMock.load.mock.calls[0][0]).toBe('https://soundcloud.com/sylvanesso/coffee');
     });
 
@@ -136,7 +136,7 @@ describe('SoundCloud Component', () => {
   describe('events', () => {
     it('should bind event handler props to playback events', () => {
       const playFn = () => {};
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' onPlay={playFn} />);
+      TestUtils.renderIntoDocument(<SoundCloud url='' onPlay={playFn} />);
 
       expect(widgetMock.bind.mock.calls.length).toBe(3);
       expect(widgetMock.bind.mock.calls[0]).toContain(playFn);

@@ -25,7 +25,9 @@
   },
   "devDependencies": {
     "babel": "^4.7.16",
+    "babel-eslint": "^2.0.2",
     "babel-jest": "^4.0.0",
+    "eslint": "^0.18.0",
     "jest-cli": "^0.4.0"
   },
   "peerDependencies": {
@@ -34,7 +36,8 @@
   "scripts": {
     "test": "jest",
     "compile": "babel src --out-dir dist",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "lint": "eslint ."
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
