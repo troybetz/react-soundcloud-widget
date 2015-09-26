@@ -56,7 +56,7 @@ class SoundCloud extends React.Component {
     return (
       <iframe id={this.props.id}
               width='100%'
-              height={this.props.opts.visual ? '450' : '166'}
+              height={this.props.height || (this.props.opts.visual ? '450' : '166')}
               scrolling='no'
               frameBorder='no'
               src='https://w.soundcloud.com/player/?url='
