@@ -1,10 +1,11 @@
 jest.dontMock('../SoundCloud');
 
-import React from 'react/addons';
+import React from 'react';
 import createWidget from '../lib/createWidget';
 import SoundCloud from '../SoundCloud';
 
-const { TestUtils } = React.addons;
+import TestUtils from 'react-addons-test-utils';
+import ReactDOM from 'react-dom';
 let widgetMock;
 
 describe('SoundCloud Component', () => {
@@ -36,7 +37,7 @@ describe('SoundCloud Component', () => {
   describe('instantiation', () => {
     it('should render a SoundCloud API ready iframe', () => {
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
-      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
+      const iframe = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('id')).toBe('react-sc-widget');
       expect(iframe.getAttribute('src')).toBe('https://w.soundcloud.com/player/?url=');
@@ -44,7 +45,7 @@ describe('SoundCloud Component', () => {
 
     it('should accept a custom iframe id', () => {
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' id='custom-id' />);
-      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
+      const iframe = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('id')).toBe('custom-id');
     });
@@ -71,7 +72,7 @@ describe('SoundCloud Component', () => {
       };
 
       const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
-      const iframe = React.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
+      const iframe = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
       expect(iframe.getAttribute('height')).toBe('450');
     });
   });
@@ -151,8 +152,8 @@ describe('SoundCloud Component', () => {
        * Instead, we'll just render it the old fashioned way.
        */
 
-      React.render(<SoundCloud url=''/>, document.body);
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.render(<SoundCloud url=''/>, document.body);
+      ReactDOM.unmountComponentAtNode(document.body);
 
       expect(widgetMock.unbind.mock.calls.length).toBe(3);
     });
