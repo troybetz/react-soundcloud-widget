@@ -33,7 +33,7 @@
     "react-dom": "^0.14.0"
   },
   "peerDependencies": {
-    "react": "^0.14.0"
+    "react": ">=0.13.0"
   },
   "scripts": {
     "test": "jest",
