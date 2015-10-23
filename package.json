@@ -5,7 +5,7 @@
   "main": "dist/SoundCloud.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/compedit/react-soundcloud-widget.git"
+    "url": "https://github.com/troybetz/react-soundcloud-widget.git"
   },
   "keywords": [
     "soundcloud",
@@ -17,9 +17,9 @@
   "author": "troy betz",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/compedit/react-soundcloud-widget/issues"
+    "url": "https://github.com/troybetz/react-soundcloud-widget/issues"
   },
-  "homepage": "https://github.com/compedit/react-soundcloud-widget",
+  "homepage": "https://github.com/troybetz/react-soundcloud-widget",
   "dependencies": {
     "load-script": "^1.0.0"
   },
