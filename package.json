@@ -29,6 +29,7 @@
     "babel-jest": "^4.0.0",
     "eslint": "^0.18.0",
     "jest-cli": "^0.4.0",
+    "react": "^0.14.0",
     "react-addons-test-utils": "^0.14.0",
     "react-dom": "^0.14.0"
   },
