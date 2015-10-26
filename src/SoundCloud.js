@@ -27,6 +27,10 @@ class SoundCloud extends React.Component {
     this._internalWidget = null;
   }
 
+  componentDidMount() {
+    this._createWidget();
+  }
+
   /**
    * @param {Object} nextProps
    * @returns {Boolean}
@@ -36,32 +40,12 @@ class SoundCloud extends React.Component {
     return nextProps.url !== this.props.url;
   }
 
-  componentDidMount() {
-    this._createWidget();
-  }
-
   componentDidUpdate() {
     this._reloadWidget();
   }
 
   componentWillUnmount() {
     this._unbindEvents();
-  }
-
-  /**
-   * @returns {Object}
-   */
-
-  render() {
-    return (
-      <iframe id={this.props.id}
-              width='100%'
-              height={this.props.height || (this.props.opts.visual ? '450' : '166')}
-              scrolling='no'
-              frameBorder='no'
-              src='https://w.soundcloud.com/player/?url='
-      />
-    );
   }
 
   /**
@@ -120,6 +104,22 @@ class SoundCloud extends React.Component {
     this._internalWidget.unbind(window.SC.Widget.Events.PAUSE);
     this._internalWidget.unbind(window.SC.Widget.Events.FINISH);
   }
+
+  /**
+   * @returns {Object}
+   */
+
+  render() {
+    return (
+      <iframe id={this.props.id}
+              width="100%"
+              height={this.props.height || (this.props.opts.visual ? '450' : '166')}
+              scrolling="no"
+              frameBorder="no"
+              src="https://w.soundcloud.com/player/?url="
+      />
+    );
+  }
 }
 
 SoundCloud.propTypes = {
@@ -130,13 +130,18 @@ SoundCloud.propTypes = {
   // custom ID for widget iframe element
   id: React.PropTypes.string,
 
+  height: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.number,
+  ]),
+
   // widget parameters for appearance and auto play.
   opts: React.PropTypes.objectOf(React.PropTypes.bool),
 
   // event subscriptions
   onPlay: React.PropTypes.func,
   onPause: React.PropTypes.func,
-  onEnd: React.PropTypes.func
+  onEnd: React.PropTypes.func,
 };
 
 SoundCloud.defaultProps = {
@@ -144,7 +149,7 @@ SoundCloud.defaultProps = {
   opts: {},
   onPlay: () => {},
   onPause: () => {},
-  onEnd: () => {}
+  onEnd: () => {},
 };
 
 /**

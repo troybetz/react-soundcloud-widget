@@ -10,7 +10,6 @@ let widgetMock;
 
 describe('SoundCloud Component', () => {
   beforeEach(() => {
-
     /**
      * Mock out SoundCloud widget API
      */
@@ -20,15 +19,15 @@ describe('SoundCloud Component', () => {
         Events: {
           PLAY: 'play',
           PAUSE: 'pause',
-          FINISH: 'finish'
-        }
-      }
+          FINISH: 'finish',
+        },
+      },
     };
 
     widgetMock = {
       load: jest.genMockFunction(),
       bind: jest.genMockFunction(),
-      unbind: jest.genMockFunction()
+      unbind: jest.genMockFunction(),
     };
 
     createWidget.mockImplementation((props, cb) => cb(widgetMock));
@@ -36,7 +35,7 @@ describe('SoundCloud Component', () => {
 
   describe('instantiation', () => {
     it('should render a SoundCloud API ready iframe', () => {
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url="" />);
       const iframe = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('id')).toBe('react-sc-widget');
@@ -44,14 +43,14 @@ describe('SoundCloud Component', () => {
     });
 
     it('should accept a custom iframe id', () => {
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' id='custom-id' />);
+      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url="" id="custom-id" />);
       const iframe = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
 
       expect(iframe.getAttribute('id')).toBe('custom-id');
     });
 
     it('should create a new SoundCloud widget', () => {
-      TestUtils.renderIntoDocument(<SoundCloud url='' />);
+      TestUtils.renderIntoDocument(<SoundCloud url="" />);
       expect(createWidget.mock.calls[0][0]).toBe('react-sc-widget');
     });
   });
@@ -59,19 +58,19 @@ describe('SoundCloud Component', () => {
   describe('appearance', () => {
     it('should pass a set of `opts` into the widget', () => {
       const opts = {
-        buying: false
+        buying: false,
       };
 
-      TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
+      TestUtils.renderIntoDocument(<SoundCloud url="" opts={opts} />);
       expect(widgetMock.load.mock.calls[0][1]).toEqual(opts);
     });
 
     it('should readjust height if visual mode is enabled', () => {
       const opts = {
-        visual: true
+        visual: true,
       };
 
-      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url='' opts={opts} />);
+      const soundcloud = TestUtils.renderIntoDocument(<SoundCloud url="" opts={opts} />);
       const iframe = ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithTag(soundcloud, 'iframe'));
       expect(iframe.getAttribute('height')).toBe('450');
     });
@@ -81,10 +80,16 @@ describe('SoundCloud Component', () => {
     class Container extends React.Component {
       constructor() {
         this.state = {
-          url: 'https://soundcloud.com/sylvanesso/coffee'
+          url: 'https://soundcloud.com/sylvanesso/coffee',
         };
 
         this._changeUrl = this._changeUrl.bind(this);
+      }
+
+      _changeUrl() {
+        this.setState({
+          url: 'https://soundcloud.com/hudsonmohawke/chimes',
+        });
       }
 
       render() {
@@ -94,12 +99,6 @@ describe('SoundCloud Component', () => {
             <button onClick={this._changeUrl}>Change url</button>
           </div>
         );
-      }
-
-      _changeUrl() {
-        this.setState({
-          url: 'https://soundcloud.com/hudsonmohawke/chimes'
-        });
       }
     }
 
@@ -137,14 +136,13 @@ describe('SoundCloud Component', () => {
   describe('events', () => {
     it('should bind event handler props to playback events', () => {
       const playFn = () => {};
-      TestUtils.renderIntoDocument(<SoundCloud url='' onPlay={playFn} />);
+      TestUtils.renderIntoDocument(<SoundCloud url="" onPlay={playFn} />);
 
       expect(widgetMock.bind.mock.calls.length).toBe(3);
       expect(widgetMock.bind.mock.calls[0]).toContain(playFn);
     });
 
     it('should remove event bindings when unmounted', () => {
-
       /**
        * `TestUtils.renderIntoDocument` renders the component into
        * a detached DOM node, which makes it difficult to unmount.
@@ -152,7 +150,7 @@ describe('SoundCloud Component', () => {
        * Instead, we'll just render it the old fashioned way.
        */
 
-      ReactDOM.render(<SoundCloud url=''/>, document.body);
+      ReactDOM.render(<SoundCloud url=""/>, document.body);
       ReactDOM.unmountComponentAtNode(document.body);
 
       expect(widgetMock.unbind.mock.calls.length).toBe(3);
