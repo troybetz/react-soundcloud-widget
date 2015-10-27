@@ -1,4 +1,4 @@
-# react-soundcloud-widget
+# react-soundcloud-widget [![Build Status](https://travis-ci.org/troybetz/react-soundcloud-widget.svg?branch=master)](https://travis-ci.org/troybetz/react-soundcloud-widget)
 
 Simple [React](http://facebook.github.io/react) component acting as a thin
 layer over the [SoundCloud HTML5 Widget](https://developers.soundcloud.com/docs/api/html5-widget).
