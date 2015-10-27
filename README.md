@@ -32,21 +32,20 @@ $ npm install react-soundcloud-widget
 ## Example
 
 ```js
-var React = require('react');
-var SoundCloud = require('react-soundcloud-widget');
+class Example extends Component {
+  onPlay() {
+    console.log('playing');
+  }
 
-var Example = React.createClass({
-  _onPlay: function() {
-    console.log('PLAYING');
-  },
-
-  render: function() {
+  render() {
     return (
-      <SoundCloud url={'https://soundcloud.com/sylvanesso/coffee'}
-                  onPlay={this._onPlay} />
+      <SoundCloud
+        url={'https://soundcloud.com/sylvanesso/coffee'}
+        onPlay={this.onPlay}
+      />
     );
   }
-});
+}
 
 ```
 
