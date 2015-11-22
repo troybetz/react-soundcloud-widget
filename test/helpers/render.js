@@ -20,8 +20,10 @@ function setup() {
   };
 
   const SoundCloud = proxyquire('../../src/SoundCloud', {
-    './lib/createWidget': (id, cb) => cb(widgetStub),
-  });
+    './lib/createWidget': {
+      default: (id, cb) => cb(widgetStub),
+    },
+  }).default;
 
   return {
     widgetStub,
