@@ -135,8 +135,22 @@ SoundCloud.propTypes = {
     React.PropTypes.number,
   ]),
 
-  // widget parameters for appearance and auto play.
-  opts: React.PropTypes.objectOf(React.PropTypes.bool),
+  // widget parameters: appearance, auto play, and callback for SC.Widget.load()
+  opts: React.PropTypes.shape({
+    auto_play: React.PropTypes.bool,
+    visual: React.PropTypes.bool,
+    buying: React.PropTypes.bool,
+    liking: React.PropTypes.bool,
+    download: React.PropTypes.bool,
+    sharing: React.PropTypes.bool,
+    show_artwork: React.PropTypes.bool,
+    show_comments: React.PropTypes.bool,
+    show_playcount: React.PropTypes.bool,
+    show_user: React.PropTypes.bool,
+    show_reposts: React.PropTypes.bool,
+    hide_related: React.PropTypes.bool,
+    callback: React.PropTypes.func
+  }),
 
   // event subscriptions
   onPlay: React.PropTypes.func,
