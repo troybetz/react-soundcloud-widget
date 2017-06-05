@@ -66,7 +66,7 @@ class SoundCloud extends React.Component {
    * @param {Object} Widget
    */
 
-  _setupWidget(widget) {
+  _setupWidget = (widget) => {
     this._internalWidget = widget;
     this._bindEvents();
   }
@@ -80,7 +80,7 @@ class SoundCloud extends React.Component {
    * time the url changes it breaks the back button. Super bummer.
    */
 
-  _reloadWidget() {
+  _reloadWidget = () => {
     this._internalWidget.load(this.props.url, this.props.opts);
   }
 
