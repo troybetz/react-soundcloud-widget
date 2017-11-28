@@ -4,6 +4,7 @@
 
 import React from 'react';
 import createWidget from './lib/createWidget';
+import PropTypes from 'prop-types';
 
 /**
  * Create a new `SoundCloud` component.
@@ -125,23 +126,23 @@ class SoundCloud extends React.Component {
 SoundCloud.propTypes = {
   // url to play. It's kept in sync, changing it will
   // cause the widget to refresh and play the new url.
-  url: React.PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
 
   // custom ID for widget iframe element
-  id: React.PropTypes.string,
+  id: PropTypes.string,
 
-  height: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.number,
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
   ]),
 
   // widget parameters for appearance and auto play.
-  opts: React.PropTypes.objectOf(React.PropTypes.bool),
+  opts: PropTypes.objectOf(PropTypes.bool),
 
   // event subscriptions
-  onPlay: React.PropTypes.func,
-  onPause: React.PropTypes.func,
-  onEnd: React.PropTypes.func,
+  onPlay: PropTypes.func,
+  onPause: PropTypes.func,
+  onEnd: PropTypes.func,
 };
 
 SoundCloud.defaultProps = {
